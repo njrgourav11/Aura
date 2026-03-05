@@ -1,28 +1,50 @@
 "use client"
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Search, Users, Mail, Phone, MoreVertical, Loader2, X } from "lucide-react";
+import { Plus, Search, Users, Mail, Phone, MoreVertical, Loader2, X, Share2, Link as LinkIcon, Check, Globe } from "lucide-react";
 import ClientModal from "@/components/modals/ClientModal";
+import PortalSettingsModal from "@/components/modals/PortalSettingsModal";
 
 export default function ClientsPage() {
     const [searchQuery, setSearchQuery] = useState("");
     const [clients, setClients] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isPortalModalOpen, setIsPortalModalOpen] = useState(false);
     const [selectedClient, setSelectedClient] = useState<any>(null);
+    const [copiedId, setCopiedId] = useState<string | null>(null);
 
-    const fetchClients = async () => {
-        setLoading(true);
+    const handleCopyPortalLink = (client: any) => {
+        if (!client.portalActive || !client.portalToken) {
+            setSelectedClient(client);
+            setIsPortalModalOpen(true);
+            return;
+        }
+        console.log("Copying portal link for client:", client);
+        const url = `${window.location.origin}/portal/${client.portalToken}`;
+        navigator.clipboard.writeText(url);
+        setCopiedId(client._id);
+        setTimeout(() => setCopiedId(null), 2000);
+    };
+
+    const fetchClients = async (silent = false) => {
+        if (!silent) setLoading(true);
         try {
-            const res = await fetch("/api/clients");
+            const res = await fetch(`/api/clients?t=${Date.now()}`, { cache: "no-store", headers: { 'Pragma': 'no-cache' } });
             if (res.ok) {
                 const data = await res.json();
                 setClients(data);
+
+                // If a client is currently selected in a modal, update its data too
+                if (selectedClient) {
+                    const updated = data.find((c: any) => c._id === selectedClient._id);
+                    if (updated) setSelectedClient(updated);
+                }
             }
         } catch (error) {
             console.error("Failed to fetch clients:", error);
         } finally {
-            setLoading(false);
+            if (!silent) setLoading(false);
         }
     };
 
@@ -145,9 +167,27 @@ export default function ClientsPage() {
                                 </div>
                                 <div className="flex items-center gap-1 opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity">
                                     <button
+                                        type="button" // Added type="button" to prevent accidental form behaviors
+                                        onClick={() => {
+                                            setSelectedClient(client);
+                                            setIsPortalModalOpen(true);
+                                        }}
+                                        className={`p-1.5 rounded-lg transition-colors ${client.portalActive ? 'text-blue-400 bg-blue-400/10' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                        title="Portal Settings"
+                                    >
+                                        <Globe size={16} />
+                                    </button>
+                                    <button
+                                        onClick={() => handleCopyPortalLink(client)}
+                                        className={`p-1.5 rounded-lg transition-colors ${copiedId === client._id ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-400 hover:text-white hover:bg-white/10'}`}
+                                        title={client.portalActive ? "Copy Portal Link" : "Activate Portal First"}
+                                    >
+                                        {copiedId === client._id ? <Check className="w-4 h-4" /> : <LinkIcon className="w-4 h-4" />}
+                                    </button>
+                                    <button
                                         onClick={() => handleEditClient(client)}
                                         className="p-1.5 text-slate-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                                        title="Edit"
+                                        title="Edit Info"
                                     >
                                         <MoreVertical className="w-4 h-4" />
                                     </button>
@@ -199,6 +239,18 @@ export default function ClientsPage() {
                 </div>
             )}
 
+            <PortalSettingsModal
+                isOpen={isPortalModalOpen}
+                onClose={() => {
+                    setIsPortalModalOpen(false);
+                    setSelectedClient(null);
+                }}
+                client={selectedClient}
+                onUpdate={async () => {
+                    await fetchClients(true);
+                }}
+            />
+
             <ClientModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
@@ -208,4 +260,3 @@ export default function ClientsPage() {
         </div>
     );
 }
-

@@ -2,9 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
-import { Client } from "@/lib/models/UserClient";
-
-export const dynamic = 'force-dynamic';
+import { Project } from "@/lib/models/Project";
 
 export async function GET() {
     try {
@@ -14,20 +12,11 @@ export async function GET() {
         }
 
         await connectToDatabase();
-        // Return clients as-is. No more auto-fixing/auto-generating tokens here.
-        const clients = await Client.find({ userId: (session.user as any).id })
-            .sort({ createdAt: -1 })
-            .lean();
+        const projects = await Project.find({ userId: (session.user as any).id })
+            .populate('clientId', 'name email company')
+            .sort({ createdAt: -1 });
 
-        console.log(`[Clients API] Returning ${clients.length} clients. Portal data check:`,
-            clients.slice(0, 3).map(c => ({ name: c.name, active: c.portalActive, type: typeof c.portalActive, token: c.portalToken }))
-        );
-
-        return NextResponse.json(clients, {
-            headers: {
-                'Cache-Control': 'no-store, max-age=0',
-            }
-        });
+        return NextResponse.json(projects);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -43,13 +32,12 @@ export async function POST(req: Request) {
         const data = await req.json();
         await connectToDatabase();
 
-        // Create client with portalActive: false (default) and no token until requested
-        const client = await Client.create({
+        const project = await Project.create({
             ...data,
             userId: (session.user as any).id
         });
 
-        return NextResponse.json(client, { status: 201 });
+        return NextResponse.json(project, { status: 201 });
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

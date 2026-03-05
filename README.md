@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ✨ Aura Freelancer OS
 
-## Getting Started
+**The Operating System for Modern Freelancers and Creative Agencies.**
 
-First, run the development server:
+Aura is a high-performance, legal-grade business platform designed to help freelancers transition from "managing projects" to "running a professional entity." Built with Next.js 15, Aura provides a seamless, automated environment for contracts, invoices, and financial growth.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Current Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### ⚖️ Legal-Grade Document Engine
+- **ARTICLE-Based Structure:** Professional contracts with built-in clauses for IP protection, Confidentiality, and Indemnification.
+- **High-Fidelity PDF Branding:** Premium vector logos and consistent layouts for a high-end client impression.
+- **Formal Signatures:** Structured execution areas for legally binding service agreements.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 💰 Finance & Invoicing
+- **Smart Life-cycle Management:** Track invoices from Draft to Paid with real-time status updates.
+- **Automatic Payment Sync:** Mark invoices as paid instantly when a payment is logged.
+- **Multi-Currency Support:** Standardized financial tracking across global clients and currencies.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 🏢 Business Management
+- **Centralized Dashboard:** Real-time KPIs for Total Revenue, Unpaid Invoices, and Active Contracts.
+- **Dynamic Settings:** Manage your legal entity profile (Tax ID, Business Address, Contact) in one place.
+- **Secure Isolation:** Advanced multi-tenancy ensures your data is private and secure.
 
-## Learn More
+## 🗺️ Product Roadmap (Phase 2 & Beyond)
 
-To learn more about Next.js, take a look at the following resources:
+### 🌊 Phase 2: Operations & Client Portal
+- **Client Portal:** A mini-portal where clients can sign contracts, pay invoices, and download files.
+- **Project & Task Management:** Integrated Kanban/List views tied directly to contracts and billing.
+- **Time Tracking:** Start/Stop timers that convert billable hours directly into invoice line items.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 💳 Phase 3: Smart Payments & Automation
+- **Direct Collection:** Stripe, Razorpay, and PayPal integrations for instant invoice settlement.
+- **Recurring Invoices:** Automated billing for website maintenance and retainer agreements.
+- **Expense Tracking:** Capture software subscriptions and travel costs to see true net profit.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### ⚡ Phase 4: Ecosystem & Scale
+- **Proposal Generator:** Convert leads to contracts with a few clicks.
+- **Regional Tax Reports:** Automated summaries for GST (India), 1099 (US), and VAT (UK).
+- **Automation Engine:** Custom triggers (e.g., "When contract is signed → Create Project").
 
-## Deploy on Vercel
+## 🛠️ Technology Stack
+- **Framework:** Next.js 15 (App Router)
+- **Database:** MongoDB via Mongoose
+- **Auth:** NextAuth.js (Secure Sessions)
+- **Styling:** Tailwind CSS + Framer Motion
+- **Documents:** jsPDF (Coordinate-based rendering)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+*Aura: Delivering Professionalism.*

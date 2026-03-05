@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+    Briefcase,
     LayoutDashboard,
     FileSignature,
     Receipt,
@@ -18,7 +19,7 @@ import {
 
 const navItems = [
     { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard, badge: 0 },
-
+    { name: "Projects", href: "/projects", icon: Briefcase, badge: 0 },
     { name: "Contracts", href: "/contracts", icon: FileSignature, badge: 2 },
     { name: "Invoices", href: "/invoices", icon: Receipt, badge: 0 },
     { name: "Payments", href: "/payments", icon: Wallet, badge: 0 },

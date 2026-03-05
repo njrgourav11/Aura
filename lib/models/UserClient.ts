@@ -45,6 +45,8 @@ export interface IClient extends Document {
     phone?: string;
     address?: string;
     currency: string;
+    portalToken?: string;
+    portalActive: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -58,8 +60,13 @@ const ClientSchema = new Schema(
         phone: { type: String },
         address: { type: String },
         currency: { type: String, default: 'USD' }, // Multi-currency support
+        portalToken: { type: String, unique: true, sparse: true },
+        portalPassword: { type: String }, // Optional password protection
+        portalActive: { type: Boolean, default: false },
     },
     { timestamps: true }
 );
+
+// We will handle token generation in the dedicated activation API
 
 export const Client = mongoose.models.Client || mongoose.model<IClient>("Client", ClientSchema);

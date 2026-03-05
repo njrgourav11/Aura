@@ -28,23 +28,19 @@ export default function Navbar() {
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8">
-                    {["Features", "Pricing"].map((item) => (
+                    {[
+                        { label: "Features", href: "/#features" },
+                        { label: "Demo", href: "/#demo" },
+                        { label: "Pricing", href: "/pricing" },
+                        { label: "Security", href: "/#security" }
+                    ].map((item) => (
                         <Link
-                            key={item}
-                            href={`/#${item.toLowerCase()}`}
+                            key={item.label}
+                            href={item.href}
                             className="text-sm font-medium text-slate-400 hover:text-white transition-colors"
                         >
-                            {item}
+                            {item.label}
                         </Link>
-                    ))}
-                    {["Testimonials", "FAQ"].map((item) => (
-                        <span
-                            key={item}
-                            className="text-sm font-medium text-slate-600/50 cursor-not-allowed"
-                            title="Coming Soon"
-                        >
-                            {item}
-                        </span>
                     ))}
                 </div>
 
