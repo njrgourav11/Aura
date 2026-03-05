@@ -106,7 +106,7 @@ export default function PortalLogin({ token, onVerified, businessName }: PortalL
                 </div>
 
                 <p className="mt-8 text-center text-slate-500 text-sm">
-                    Secure document portal managed by <span className="text-slate-300 font-medium">Aura Freelancer OS</span>
+                    Secure document portal managed by <span className="text-slate-300 font-medium">FreelanceOS Freelancer OS</span>
                 </p>
             </motion.div>
         </div>

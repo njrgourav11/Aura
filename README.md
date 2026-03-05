@@ -1,8 +1,8 @@
-# ✨ Aura Freelancer OS
+# ✨ FreelanceOS Freelancer OS
 
 **The Operating System for Modern Freelancers and Creative Agencies.**
 
-Aura is a high-performance, legal-grade business platform designed to help freelancers transition from "managing projects" to "running a professional entity." Built with Next.js 15, Aura provides a seamless, automated environment for contracts, invoices, and financial growth.
+FreelanceOS is a high-performance, legal-grade business platform designed to help freelancers transition from "managing projects" to "running a professional entity." Built with Next.js 15, FreelanceOS provides a seamless, automated environment for contracts, invoices, and financial growth.
 
 ## 🚀 Current Features
 
@@ -46,4 +46,4 @@ Aura is a high-performance, legal-grade business platform designed to help freel
 - **Documents:** jsPDF (Coordinate-based rendering)
 
 ---
-*Aura: Delivering Professionalism.*
+*FreelanceOS: Delivering Professionalism.*

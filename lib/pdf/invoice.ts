@@ -39,10 +39,10 @@ export function generateInvoicePDF(data: InvoiceData) {
 
     // Company Info (Yours)
     doc.setFontSize(16);
-    doc.text("Aura Freelance", 15, 20);
+    doc.text("FreelanceOS Freelance", 15, 20);
     doc.setFontSize(10);
     doc.setFont("helvetica", "normal");
-    doc.text("hello@aura.inc", 15, 27);
+    doc.text("hello@FreelanceOS.inc", 15, 27);
     doc.text("123 Business Rd, Valley, CA", 15, 32);
 
     // Invoice Details

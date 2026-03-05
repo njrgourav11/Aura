@@ -241,11 +241,15 @@ export default function PortalContainer({ token, initialData }: PortalContainerP
                                             type="invoice"
                                             data={invoice}
                                             businessDetails={user}
+                                            clientName={client.name}
+                                            clientAddress={client.address}
+                                            clientEmail={client.email}
                                         />
                                         {invoice.status !== 'Paid' && (
                                             <RazorpayPaymentButton
                                                 invoice={invoice}
                                                 businessDetails={user}
+                                                portalToken={token}
                                             />
                                         )}
                                     </div>
@@ -274,6 +278,9 @@ export default function PortalContainer({ token, initialData }: PortalContainerP
                                     type="contract"
                                     data={contract}
                                     businessDetails={user}
+                                    clientName={client.name}
+                                    clientAddress={client.address}
+                                    clientEmail={client.email}
                                 />
                             </div>
                         </div>

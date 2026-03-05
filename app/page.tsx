@@ -123,7 +123,7 @@ export default async function Home() {
                 <span className="text-slate-500 text-3xl md:text-4xl">Like Running 10 Different Tools</span>
               </h2>
               <p className="text-slate-400 text-lg mb-12">
-                Stop wasting hours on administrative overhead. Aura replaces 5+ tools with one unified platform.
+                Stop wasting hours on administrative overhead. FreelanceOS replaces 5+ tools with one unified platform.
               </p>
 
               <div className="space-y-6">
@@ -227,7 +227,7 @@ export default async function Home() {
           <div className="flex flex-col items-center text-center mb-16">
             <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">See Freelancer OS in Action</h2>
             <p className="text-slate-400 max-w-2xl">
-              From onboarding a new client to reconciling payments, Aura handles the heavy lifting.
+              From onboarding a new client to reconciling payments, FreelanceOS handles the heavy lifting.
             </p>
           </div>
 
@@ -398,7 +398,7 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="glass-card p-8 border-white/5 italic text-slate-300 leading-relaxed">
-              "Aura replaced 4 tools I was using for contracts and invoices. It's the only operating system that actually understands how freelancers work."
+              "FreelanceOS replaced 4 tools I was using for contracts and invoices. It's the only operating system that actually understands how freelancers work."
               <div className="mt-6 flex items-center gap-3 not-italic">
                 <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10" />
                 <div>

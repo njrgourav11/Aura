@@ -6,9 +6,10 @@ import { Project } from "@/lib/models/Project";
 
 export async function GET(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -16,7 +17,7 @@ export async function GET(
 
         await connectToDatabase();
         const project = await Project.findOne({
-            _id: params.id,
+            _id: id,
             userId: (session.user as any).id
         }).populate('clientId', 'name email company phone address');
 
@@ -32,9 +33,10 @@ export async function GET(
 
 export async function PUT(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,10 +46,10 @@ export async function PUT(
         await connectToDatabase();
 
         const project = await Project.findOneAndUpdate(
-            { _id: params.id, userId: (session.user as any).id },
+            { _id: id, userId: (session.user as any).id },
             { $set: data },
             { new: true }
-        );
+        ).populate('clientId', 'name email company phone address');
 
         if (!project) {
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
@@ -61,9 +63,10 @@ export async function PUT(
 
 export async function DELETE(
     req: Request,
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ) {
     try {
+        const { id } = await params;
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -71,7 +74,7 @@ export async function DELETE(
 
         await connectToDatabase();
         const project = await Project.findOneAndDelete({
-            _id: params.id,
+            _id: id,
             userId: (session.user as any).id
         });
 

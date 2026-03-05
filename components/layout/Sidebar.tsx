@@ -53,10 +53,10 @@ export default function Sidebar() {
                 <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 to-fuchsia-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="flex items-center gap-3 relative z-10 w-full justify-between">
                     <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                            <Sparkles className="w-4 h-4 text-white" />
-                        </div>
-                        <span className="font-bold text-xl tracking-tight text-white">Aura</span>
+                        <img src="/logo.svg" alt="FreelanceOS" className="h-8 w-auto object-contain" />
+                        <span className="font-bold text-xl tracking-tight text-white">
+                            Freelance<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">OS</span>
+                        </span>
                     </div>
                     {isMobile && (
                         <button onClick={toggleSidebar} className="p-2 rounded-lg hover:bg-white/5 text-slate-400">

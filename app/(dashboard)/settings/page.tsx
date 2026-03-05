@@ -203,7 +203,7 @@ export default function SettingsPage() {
                                             value={formData.businessName}
                                             onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
                                             className="input-field"
-                                            placeholder="e.g. Aura Creative Studio"
+                                            placeholder="e.g. FreelanceOS Creative Studio"
                                         />
                                     </div>
                                     <div className="space-y-2">
@@ -213,7 +213,7 @@ export default function SettingsPage() {
                                             value={formData.businessEmail}
                                             onChange={(e) => setFormData({ ...formData, businessEmail: e.target.value })}
                                             className="input-field"
-                                            placeholder="hello@aura.com"
+                                            placeholder="hello@FreelanceOS.com"
                                         />
                                     </div>
                                     <div className="space-y-2">

@@ -65,7 +65,7 @@ const addDocumentHeader = (doc: jsPDF, title: string, sub: string, ref?: string)
     doc.setTextColor(79, 70, 229);
     doc.setFontSize(18);
     doc.setFont("helvetica", "bold");
-    doc.text("Aura Documents", margin + 22, 23);
+    doc.text("FreelanceOS Documents", margin + 22, 23);
 
     doc.setTextColor(107, 114, 128);
     doc.setFontSize(8);
@@ -85,7 +85,7 @@ const addDocumentFooter = (doc: jsPDF, page: number) => {
     doc.line(margin, 282, 190, 282);
     doc.setFontSize(8);
     doc.setTextColor(156, 163, 175);
-    doc.text("Aura Freelancer OS • Professional Services Cloud", margin, 288);
+    doc.text("FreelanceOS Freelancer OS • Professional Services Cloud", margin, 288);
     doc.text(`Page ${page}`, 190, 288, { align: "right" });
 };
 

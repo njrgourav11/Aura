@@ -42,7 +42,7 @@ export function generateContractPDF(data: ContractData) {
     const clientText = data.clientCompany ? `${data.clientName} (${data.clientCompany})` : data.clientName;
     addText(`Client: ${clientText}`, 11, "bold", 8);
     addText("AND", 10, "normal", 8);
-    addText(`Contractor: Aura Freelance`, 11, "bold", 15);
+    addText(`Contractor: FreelanceOS Freelance`, 11, "bold", 15);
 
     // Project Title
     addText("1. PROJECT DETAILS", 12, "bold", 8);

@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Aura | Freelancer OS",
+  title: "FreelanceOS | Freelancer OS",
   description: "Contracts, Invoices, and Payments for Modern Freelancers",
 };
 

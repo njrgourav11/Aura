@@ -8,10 +8,11 @@ import { useRouter } from "next/navigation";
 interface RazorpayButtonProps {
     invoice: any;
     businessDetails: any;
+    portalToken?: string;
     onSuccess?: () => void;
 }
 
-export default function RazorpayPaymentButton({ invoice, businessDetails, onSuccess }: RazorpayButtonProps) {
+export default function RazorpayPaymentButton({ invoice, businessDetails, portalToken, onSuccess }: RazorpayButtonProps) {
     const [loading, setLoading] = useState(false);
     const router = useRouter();
 
@@ -22,7 +23,7 @@ export default function RazorpayPaymentButton({ invoice, businessDetails, onSucc
             const orderRes = await fetch("/api/payments/razorpay/order", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ invoiceId: invoice._id }),
+                body: JSON.stringify({ invoiceId: invoice._id, portalToken }),
             });
 
             const order = await orderRes.json();
@@ -33,7 +34,7 @@ export default function RazorpayPaymentButton({ invoice, businessDetails, onSucc
                 key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
                 amount: order.amount,
                 currency: order.currency,
-                name: businessDetails.businessName || "Aura Freelancer",
+                name: businessDetails.businessName || "FreelanceOS Freelancer",
                 description: `Invoice ${invoice.invoiceNumber}`,
                 order_id: order.id,
                 handler: async function (response: any) {

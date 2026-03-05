@@ -21,7 +21,7 @@ export default function PortalLayout({
                                 A
                             </div>
                             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60">
-                                Aura Client Hub
+                                FreelanceOS Client Hub
                             </span>
                         </div>
                         <div className="text-xs text-white/40 font-mono hidden md:block">
@@ -36,7 +36,7 @@ export default function PortalLayout({
 
                 <footer className="border-t border-white/5 bg-black/20 backdrop-blur-xl py-8">
                     <div className="max-w-7xl mx-auto px-4 text-center text-white/40 text-sm">
-                        Powered by <span className="text-indigo-400 font-semibold">Aura Freelancer OS</span>
+                        Powered by <span className="text-indigo-400 font-semibold">FreelanceOS Freelancer OS</span>
                         <p className="mt-1 lowercase">Professional. Secure. Transparent.</p>
                     </div>
                 </footer>

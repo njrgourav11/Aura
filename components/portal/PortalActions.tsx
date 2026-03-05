@@ -8,23 +8,49 @@ interface PortalActionsProps {
     type: "invoice" | "contract";
     data: any;
     businessDetails: any;
+    clientName?: string;
+    clientAddress?: string;
+    clientEmail?: string;
 }
 
-export function PortalDownloadButton({ type, data, businessDetails }: PortalActionsProps) {
+function buildBusinessDetails(user: any) {
+    return {
+        name: user?.businessName || user?.name || "Service Provider",
+        email: user?.businessEmail || user?.email,
+        phone: user?.businessPhone,
+        address: user?.businessAddress,
+        taxId: user?.taxId,
+    };
+}
+
+export function PortalDownloadButton({ type, data, businessDetails, clientName, clientAddress, clientEmail }: PortalActionsProps) {
     const handleDownload = () => {
+        const bd = buildBusinessDetails(businessDetails);
         if (type === "invoice") {
             generateInvoicePDF({
-                ...data,
+                invoiceNumber: data.invoiceNumber || "INV-001",
+                clientName: clientName || data.clientName || "Client",
+                clientAddress: clientAddress || data.clientAddress || "",
+                items: data.items || [],
+                total: data.total || 0,
+                currency: data.currency || "USD",
                 issuedAt: new Date(data.issuedAt),
                 dueDate: new Date(data.dueDate),
-                businessDetails
+                businessDetails: bd,
             });
         } else {
             generateContractPDF({
-                ...data,
+                title: data.title || "Service Agreement",
+                clientName: clientName || data.clientName || "Client",
+                clientEmail: clientEmail || data.clientEmail || "",
+                clientAddress: clientAddress || data.clientAddress || "",
+                amount: data.amount || 0,
+                currency: data.currency || "USD",
                 startDate: new Date(data.startDate),
                 endDate: data.endDate ? new Date(data.endDate) : undefined,
-                businessDetails
+                scope: data.scope || "Professional services as agreed.",
+                clauses: data.clauses || [],
+                businessDetails: bd,
             });
         }
     };
@@ -40,21 +66,34 @@ export function PortalDownloadButton({ type, data, businessDetails }: PortalActi
     );
 }
 
-export function PortalViewButton({ type, data, businessDetails }: PortalActionsProps) {
+export function PortalViewButton({ type, data, businessDetails, clientName, clientAddress, clientEmail }: PortalActionsProps) {
     const handleView = () => {
+        const bd = buildBusinessDetails(businessDetails);
         if (type === "invoice") {
             generateInvoicePDF({
-                ...data,
+                invoiceNumber: data.invoiceNumber || "INV-001",
+                clientName: clientName || data.clientName || "Client",
+                clientAddress: clientAddress || data.clientAddress || "",
+                items: data.items || [],
+                total: data.total || 0,
+                currency: data.currency || "USD",
                 issuedAt: new Date(data.issuedAt),
                 dueDate: new Date(data.dueDate),
-                businessDetails
+                businessDetails: bd,
             });
         } else {
             generateContractPDF({
-                ...data,
+                title: data.title || "Service Agreement",
+                clientName: clientName || data.clientName || "Client",
+                clientEmail: clientEmail || data.clientEmail || "",
+                clientAddress: clientAddress || data.clientAddress || "",
+                amount: data.amount || 0,
+                currency: data.currency || "USD",
                 startDate: new Date(data.startDate),
                 endDate: data.endDate ? new Date(data.endDate) : undefined,
-                businessDetails
+                scope: data.scope || "Professional services as agreed.",
+                clauses: data.clauses || [],
+                businessDetails: bd,
             });
         }
     };

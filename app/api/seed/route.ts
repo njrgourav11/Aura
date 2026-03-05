@@ -17,12 +17,12 @@ export async function POST() {
         await Payment.deleteMany({});
 
         // 2. Create Demo User
-        const hashedPassword = await bcrypt.hash("aura123", 10);
+        const hashedPassword = await bcrypt.hash("FreelanceOS123", 10);
         const demoUser = await User.create({
             name: "Alex Freelancer",
             email: "alex@example.com",
             password: hashedPassword,
-            businessName: "Aura Creative Studio",
+            businessName: "FreelanceOS Creative Studio",
             defaultCurrency: "USD"
         });
 

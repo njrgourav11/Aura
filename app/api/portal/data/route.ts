@@ -44,8 +44,10 @@ export async function POST(req: Request) {
             user: {
                 name: user.name,
                 businessName: user.businessName,
-                businessEmail: user.businessEmail,
+                businessEmail: user.businessEmail || user.email,
                 businessPhone: user.businessPhone,
+                businessAddress: user.businessAddress,
+                taxId: user.taxId,
             },
             invoices,
             contracts,

@@ -34,7 +34,11 @@ const UserSchema = new Schema(
     { timestamps: true }
 );
 
-export const User = mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
+// Fix for Next.js hot-reloading: remove cached models if they exist
+if (mongoose.models.User) {
+    delete mongoose.models.User;
+}
+export const User = mongoose.model<IUser>("User", UserSchema);
 
 // --- Client Model ---
 export interface IClient extends Document {
@@ -46,6 +50,7 @@ export interface IClient extends Document {
     address?: string;
     currency: string;
     portalToken?: string;
+    portalPassword?: string;
     portalActive: boolean;
     createdAt: Date;
     updatedAt: Date;
@@ -69,4 +74,8 @@ const ClientSchema = new Schema(
 
 // We will handle token generation in the dedicated activation API
 
-export const Client = mongoose.models.Client || mongoose.model<IClient>("Client", ClientSchema);
+// Fix for Next.js hot-reloading: remove cached model
+if (mongoose.models.Client) {
+    delete mongoose.models.Client;
+}
+export const Client = mongoose.model<IClient>("Client", ClientSchema);

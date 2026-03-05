@@ -22,7 +22,7 @@ export default function DashboardLayout({
 
                     <footer className="mt-20 py-8 border-t border-white/5 text-center">
                         <p className="text-slate-500 text-xs">
-                            © {new Date().getFullYear()} Aura Freelancer OS. Handcrafted for modern professionals.
+                            © {new Date().getFullYear()} FreelanceOS Freelancer OS. Handcrafted for modern professionals.
                         </p>
                     </footer>
                 </main>

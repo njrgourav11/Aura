@@ -28,6 +28,7 @@ export interface IProject extends Document {
     tasks: ITask[];
     notes: INote[];
     milestones: IMilestone[];
+    analysis?: string;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -64,9 +65,14 @@ const ProjectSchema = new Schema(
         endDate: { type: Date },
         tasks: [TaskSchema],
         notes: [NoteSchema],
-        milestones: [MilestoneSchema]
+        milestones: [MilestoneSchema],
+        analysis: { type: String, default: "" }
     },
     { timestamps: true }
 );
 
+// Clear mongoose cache for hot-reload in dev
+if (mongoose.models.Project) {
+    delete mongoose.models.Project;
+}
 export const Project = mongoose.models.Project || mongoose.model<IProject>("Project", ProjectSchema);

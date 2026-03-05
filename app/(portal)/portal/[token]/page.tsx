@@ -37,9 +37,10 @@ async function getSafePortalMetadata(token: string) {
 export default async function PortalPage({
     params,
 }: {
-    params: { token: string };
+    params: Promise<{ token: string }>;
 }) {
-    const meta = await getSafePortalMetadata(params.token);
+    const { token } = await params;
+    const meta = await getSafePortalMetadata(token);
 
     if (!meta) {
         return (
@@ -60,7 +61,7 @@ export default async function PortalPage({
 
     return (
         <PortalContainer
-            token={params.token}
+            token={token}
             initialData={meta}
         />
     );

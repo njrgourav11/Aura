@@ -12,7 +12,9 @@ import {
     Loader2,
     X,
     FolderOpen,
-    ArrowRight
+    ArrowRight,
+    Edit2,
+    Trash2
 } from "lucide-react";
 import Link from "next/link";
 import ProjectModal from "@/components/modals/ProjectModal";
@@ -52,6 +54,18 @@ export default function ProjectsPage() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedProject(null);
+    };
+
+    const handleDelete = async (projectId: string) => {
+        if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) return;
+        try {
+            const res = await fetch(`/api/projects/${projectId}`, { method: "DELETE" });
+            if (res.ok) {
+                fetchProjects();
+            }
+        } catch (error) {
+            console.error("Failed to delete project:", error);
+        }
     };
 
     return (
@@ -133,8 +147,21 @@ export default function ProjectsPage() {
                         >
                             <div className="flex justify-between items-start mb-6">
                                 <StatusBadge status={project.status} />
-                                <div className="p-2 bg-white/5 rounded-lg text-slate-500 hover:text-white transition-colors cursor-pointer">
-                                    <MoreHorizontal size={18} />
+                                <div className="flex items-center gap-2">
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); setSelectedProject(project); setIsModalOpen(true); }}
+                                        className="p-1.5 bg-white/5 rounded-lg text-slate-400 hover:text-indigo-400 transition-colors"
+                                        title="Edit Project"
+                                    >
+                                        <Edit2 size={16} />
+                                    </button>
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleDelete(project._id); }}
+                                        className="p-1.5 bg-white/5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-400/10 transition-colors"
+                                        title="Delete Project"
+                                    >
+                                        <Trash2 size={16} />
+                                    </button>
                                 </div>
                             </div>
 
@@ -171,7 +198,7 @@ export default function ProjectsPage() {
                                 <div className="flex items-center gap-3">
                                     <div className="flex -space-x-2">
                                         <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] font-bold border-2 border-slate-900">
-                                            {project.clientId?.name?.charAt(0) || "?"}
+                                            {project.clientId?.name ? project.clientId.name.charAt(0) : "?"}
                                         </div>
                                     </div>
                                     <span className="text-xs text-slate-500">

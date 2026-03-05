@@ -15,10 +15,15 @@ import {
     ArrowLeft,
     Users,
     ChevronRight,
-    StickyNote
+    StickyNote,
+    FileText,
+    Download
 } from "lucide-react";
 import Link from "next/link";
 import { StatusBadge } from "@/components/ui/StatusBadge";
+import { generateAnalysisPDF } from "@/lib/pdf/analysis";
+import { CanvasEditor } from "@/components/ui/CanvasEditor";
+import ProjectModal from "@/components/modals/ProjectModal";
 
 export default function ProjectDetailsPage() {
     const { id } = useParams();
@@ -26,7 +31,9 @@ export default function ProjectDetailsPage() {
     const [project, setProject] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [newNote, setNewNote] = useState("");
+    const [analysisText, setAnalysisText] = useState("");
     const [saving, setSaving] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const fetchProject = async () => {
         try {
@@ -34,6 +41,7 @@ export default function ProjectDetailsPage() {
             if (res.ok) {
                 const data = await res.json();
                 setProject(data);
+                setAnalysisText(data.analysis || "");
             } else {
                 router.push("/projects");
             }
@@ -92,6 +100,27 @@ export default function ProjectDetailsPage() {
         setNewNote("");
     };
 
+    const handleSaveAnalysis = async (content: string) => {
+        setAnalysisText(content);
+        await updateProjectData({ analysis: content });
+    };
+
+    const handleDeleteProject = async () => {
+        if (!confirm("Are you sure you want to delete this project? This action cannot be undone.")) return;
+        setSaving(true);
+        try {
+            const res = await fetch(`/api/projects/${id}`, { method: "DELETE" });
+            if (res.ok) {
+                router.push("/projects");
+            } else {
+                setSaving(false);
+            }
+        } catch (error) {
+            console.error("Failed to delete project:", error);
+            setSaving(false);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center p-20 text-slate-500 min-h-[60vh]">
@@ -126,13 +155,16 @@ export default function ProjectDetailsPage() {
                         </div>
                         <p className="text-slate-400 flex items-center gap-2">
                             <Users size={16} />
-                            {project.clientId?.name} {project.clientId?.company && `· ${project.clientId.company}`}
+                            {project.clientId?.name || "No Client Assigned"} {project.clientId?.company && `· ${project.clientId.company}`}
                         </p>
                     </div>
 
                     <div className="flex items-center gap-3">
                         {saving && <div className="text-xs text-indigo-400 font-medium animate-pulse">Saving changes...</div>}
-                        <button className="btn-secondary">Edit Project</button>
+                        <button onClick={() => setIsEditModalOpen(true)} className="btn-secondary">Edit Project</button>
+                        <button onClick={handleDeleteProject} className="p-2 text-slate-400 hover:text-red-400 hover:bg-white/5 rounded-xl transition-colors" title="Delete Project">
+                            <Trash2 size={20} />
+                        </button>
                     </div>
                 </div>
             </div>
@@ -196,8 +228,8 @@ export default function ProjectDetailsPage() {
                                     key={idx}
                                     onClick={() => toggleTask(idx)}
                                     className={`flex items-center gap-3 p-4 rounded-xl border transition-all cursor-pointer group ${task.completed
-                                            ? 'bg-emerald-500/5 border-emerald-500/10 text-slate-400'
-                                            : 'bg-white/5 border-white/5 text-slate-200 hover:border-indigo-500/30'
+                                        ? 'bg-emerald-500/5 border-emerald-500/10 text-slate-400'
+                                        : 'bg-white/5 border-white/5 text-slate-200 hover:border-indigo-500/30'
                                         }`}
                                 >
                                     {task.completed ? (
@@ -285,6 +317,28 @@ export default function ProjectDetailsPage() {
                             </div>
                         </div>
                     </motion.div>
+
+                    {/* Analysis Section */}
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.3 }}
+                        className="space-y-4"
+                    >
+                        <h2 className="text-xl font-bold text-white flex items-center justify-between px-1 mb-2">
+                            <span className="flex items-center gap-2">
+                                <FileText size={22} className="text-fuchsia-400" />
+                                Project Canvas
+                            </span>
+                        </h2>
+
+                        <CanvasEditor
+                            initialContent={analysisText}
+                            onSave={handleSaveAnalysis}
+                            onGenerateDocument={() => generateAnalysisPDF({ ...project, analysis: analysisText })}
+                            isSaving={saving}
+                        />
+                    </motion.div>
                 </div>
 
                 {/* Sidebar Context */}
@@ -299,11 +353,11 @@ export default function ProjectDetailsPage() {
                         <div className="p-4 rounded-xl bg-white/5 border border-white/5 space-y-4">
                             <div className="flex items-center gap-3">
                                 <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white font-bold">
-                                    {project.clientId?.name.charAt(0)}
+                                    {project.clientId?.name ? project.clientId.name.charAt(0) : "?"}
                                 </div>
                                 <div>
-                                    <p className="text-white font-bold">{project.clientId?.name}</p>
-                                    <p className="text-xs text-slate-500">{project.clientId?.email}</p>
+                                    <p className="text-white font-bold">{project.clientId?.name || "Unknown Client"}</p>
+                                    <p className="text-xs text-slate-500">{project.clientId?.email || ""}</p>
                                 </div>
                             </div>
                             <div className="pt-4 border-t border-white/5 space-y-2">
@@ -377,6 +431,16 @@ export default function ProjectDetailsPage() {
                     </motion.div>
                 </div>
             </div>
+
+            <ProjectModal
+                isOpen={isEditModalOpen}
+                onClose={() => setIsEditModalOpen(false)}
+                onSuccess={() => {
+                    setIsEditModalOpen(false);
+                    fetchProject();
+                }}
+                project={project}
+            />
         </div>
     );
 }

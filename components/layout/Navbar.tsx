@@ -21,10 +21,10 @@ export default function Navbar() {
             }`}>
             <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-2 group">
-                    <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/20 group-hover:scale-110 transition-transform">
-                        <Sparkles className="w-5 h-5 text-white" />
-                    </div>
-                    <span className="font-bold text-xl tracking-tight text-white">Aura</span>
+                    <img src="/logo.svg" alt="FreelanceOS" className="h-10 w-auto object-contain" />
+                    <span className="font-bold text-2xl tracking-tight text-white">
+                        Freelance<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">OS</span>
+                    </span>
                 </Link>
 
                 <div className="hidden md:flex items-center gap-8">

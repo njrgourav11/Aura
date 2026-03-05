@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import { Sparkles, Twitter, Github, Linkedin, Mail } from "lucide-react";
 
@@ -11,10 +12,10 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="space-y-6">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-lg shadow-indigo-500/20">
-                                <Sparkles className="w-5 h-5 text-white" />
-                            </div>
-                            <span className="font-bold text-xl tracking-tight text-white">Aura</span>
+                            <img src="/logo.svg" alt="FreelanceOS" className="h-8 w-auto object-contain" />
+                            <span className="font-bold text-xl tracking-tight text-white">
+                                Freelance<span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">OS</span>
+                            </span>
                         </Link>
                         <p className="text-slate-400 text-sm leading-relaxed max-w-xs">
                             Automating the legal and financial burden for modern freelancers, so you can focus on your craft.
@@ -78,7 +79,7 @@ export default function Footer() {
 
                 <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-slate-500 text-xs">
-                        © {currentYear} Aura Freelancer OS. All rights reserved.
+                        © {currentYear} FreelanceOS Freelancer OS. All rights reserved.
                     </p>
                     <div className="flex gap-6">
                         <Link href="#" className="text-xs text-slate-500 hover:text-slate-300">Privacy Policy</Link>

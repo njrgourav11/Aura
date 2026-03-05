@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Authentication | Aura",
-    description: "Sign in to your Aura account",
+    title: "Authentication | FreelanceOS",
+    description: "Sign in to your FreelanceOS account",
 };
 
 export default function AuthLayout({
