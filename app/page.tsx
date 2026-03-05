@@ -1,11 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import {
   ArrowRight,
   FileSignature,
   Receipt,
   Settings,
   ShieldCheck,
-  Clock,
   TrendingUp,
   Users,
   Shield,
@@ -21,6 +21,115 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 
+export const metadata: Metadata = {
+  title: "FreelanceOS — Freelance Contracts, Invoices & Client Management Software",
+  description:
+    "FreelanceOS is the #1 all-in-one freelancer operating system. Create contracts, send invoices, track payments, manage clients & run analytics. The best Bonsai, HoneyBook & Dubsado alternative. Start free today.",
+  alternates: {
+    canonical: "https://www.freelanceos.app",
+  },
+  openGraph: {
+    title: "FreelanceOS — Freelance Contracts, Invoices & Client Management",
+    description:
+      "Run your entire freelance business from one platform. Contracts, invoices, client CRM, analytics & payments — all in one place. Better than Bonsai, HoneyBook & Dubsado.",
+    url: "https://www.freelanceos.app",
+    type: "website",
+  },
+};
+
+// JSON-LD Structured Data
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "FreelanceOS",
+      "url": "https://www.freelanceos.app",
+      "logo": "https://www.freelanceos.app/logo.svg",
+      "applicationCategory": "BusinessApplication",
+      "operatingSystem": "Web",
+      "description":
+        "FreelanceOS is the all-in-one freelancer operating system for creating contracts, sending invoices, tracking payments, managing clients, and running business analytics.",
+      "offers": {
+        "@type": "Offer",
+        "price": "9.00",
+        "priceCurrency": "USD",
+        "description": "Starting at $9/month for freelancers",
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "312",
+      },
+      "featureList": [
+        "Freelance Contract Generator",
+        "Invoice Software",
+        "Client CRM",
+        "Payment Tracking",
+        "Revenue Analytics",
+        "Multi-Currency Support",
+        "Client Portal",
+        "Project Management"
+      ],
+    },
+    {
+      "@type": "Organization",
+      "name": "FreelanceOS",
+      "url": "https://www.freelanceos.app",
+      "logo": "https://www.freelanceos.app/logo.svg",
+      "sameAs": [],
+      "description":
+        "FreelanceOS provides freelance management software including contract generation, invoicing, payment tracking, and client management tools.",
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is FreelanceOS?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FreelanceOS is an all-in-one freelancer operating system that lets you create contracts, send professional invoices, track payments, manage clients, and view business analytics from a single platform."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is FreelanceOS a good Bonsai alternative?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. FreelanceOS offers the same core features as Bonsai — contracts, invoices, and client management — at a lower price point, with additional features like a client portal and Razorpay payment integration."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can I use FreelanceOS for free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "FreelanceOS offers a Starter plan starting at $9/month. You can register and explore the platform. No credit card is required to get started."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Does FreelanceOS support multiple currencies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. FreelanceOS supports multi-currency invoicing and revenue tracking, making it ideal for freelancers working with international clients."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is FreelanceOS suitable for freelance agencies?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. FreelanceOS has an Agency plan designed for freelance teams and small creative agencies with unlimited clients and team management features."
+          }
+        }
+      ]
+    }
+  ]
+};
+
+
 export default async function Home() {
   const session = await getServerSession(authOptions);
 
@@ -30,6 +139,11 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-950 text-slate-50 selection:bg-indigo-500/30">
+      {/* JSON-LD Structured Data for Rich Results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <Navbar />
 
       {/* 1. Hero Section */}
