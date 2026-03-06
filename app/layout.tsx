@@ -97,8 +97,7 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   verification: {
-    // Add Google Search Console / Bing verification codes here
-    // google: "your-google-verification-code",
+    google: "b4e94f568e47eb12",
   },
   alternates: {
     canonical: APP_URL,
