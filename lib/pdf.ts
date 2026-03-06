@@ -40,57 +40,115 @@ export interface InvoiceData {
 }
 
 /* -------------------------------- */
-/* Shared Helpers */
+/* Shared Helpers                   */
 /* -------------------------------- */
 
-const drawLogo = (doc: jsPDF, x: number, y: number) => {
-    doc.setFillColor(79, 70, 229);
-    doc.circle(x + 10, y + 10, 8, "F");
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.text("A", x + 7.5, y + 13.5);
-};
+// Color palette
+const INK:      [number, number, number] = [15,  12,   9];
+const SLATE:    [number, number, number] = [45,  42,  55];
+const MIST:     [number, number, number] = [120, 115, 130];
+const FOG:      [number, number, number] = [200, 196, 206];
+const PAPER:    [number, number, number] = [250, 248, 245];
+const CREAM:    [number, number, number] = [238, 234, 226];
+const ACCENT:   [number, number, number] = [220,  90,  60];  // terracotta
+const SAGE:     [number, number, number] = [60,  130, 110];  // sage green
+const INDIGO:   [number, number, number] = [75,   65, 180];
+const GOLD:     [number, number, number] = [190, 155,  85];
 
-const addDocumentHeader = (doc: jsPDF, title: string, sub: string, ref?: string) => {
-    const pageWidth = 210;
+const fmtNum = (n: number) =>
+    n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+const addDocumentHeader = (
+    doc: jsPDF,
+    type: string,
+    ref?: string,
+    sub?: string
+) => {
+    const W = 210;
     const margin = 20;
 
-    // Background Accent
-    doc.setFillColor(249, 250, 251);
-    doc.rect(0, 0, pageWidth, 40, "F");
+    // Deep ink header band
+    doc.setFillColor(...INK);
+    doc.rect(0, 0, W, 46, "F");
 
-    // Brand Logo & Name
-    drawLogo(doc, margin, 10);
-    doc.setTextColor(79, 70, 229);
-    doc.setFontSize(18);
+    // Subtle horizontal rules for texture
+    doc.setDrawColor(28, 25, 32);
+    doc.setLineWidth(0.25);
+    for (let i = 1; i <= 5; i++) doc.line(0, i * 8, W, i * 8);
+
+    // Brand circle mark
+    doc.setFillColor(...ACCENT);
+    doc.circle(margin + 10, 23, 10, "F");
+    doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
-    doc.text("FreelanceOS Documents", margin + 22, 23);
+    doc.setTextColor(255, 255, 255);
+    doc.text("F", margin + 7, 27);
 
-    doc.setTextColor(107, 114, 128);
+    // Company name & tagline
+    doc.setFontSize(15);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.text("FreelanceOS", margin + 24, 21);
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...FOG);
+    doc.text("PROFESSIONAL DOCUMENT SERVICES", margin + 24, 28);
+
+    // Document type badge (right side)
+    const typeLabel = type.toUpperCase();
+    const badgeW = typeLabel.length * 3.1 + 12;
+    doc.setFillColor(...ACCENT);
+    doc.roundedRect(W - margin - badgeW, 13, badgeW, 10, 2, 2, "F");
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(255, 255, 255);
+    doc.text(typeLabel, W - margin - badgeW + 6, 20);
+
+    // Ref & date
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.text(sub.toUpperCase(), margin + 22, 28);
+    doc.setTextColor(...FOG);
+    if (ref) doc.text(`REF: ${ref}`, W - margin, 30, { align: "right" });
+    doc.text(`ISSUED: ${format(new Date(), "PP")}`, W - margin, 37, { align: "right" });
 
-    // Right Side Metadata
-    doc.setFontSize(9);
-    doc.setTextColor(75, 85, 99);
-    if (ref) doc.text(`REF: ${ref}`, 190, 20, { align: "right" });
-    doc.text(`ISSUED: ${format(new Date(), "PP")}`, 190, 25, { align: "right" });
+    // Bottom accent stripe
+    doc.setFillColor(...ACCENT);
+    doc.rect(0, 46, W, 1.5, "F");
 };
 
 const addDocumentFooter = (doc: jsPDF, page: number) => {
     const margin = 20;
-    doc.setDrawColor(229, 231, 235);
-    doc.line(margin, 282, 190, 282);
-    doc.setFontSize(8);
-    doc.setTextColor(156, 163, 175);
-    doc.text("FreelanceOS Freelancer OS • Professional Services Cloud", margin, 288);
-    doc.text(`Page ${page}`, 190, 288, { align: "right" });
+    const W = 210;
+    doc.setFillColor(...INK);
+    doc.rect(0, 278, W, 20, "F");
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "normal");
+    doc.setTextColor(...FOG);
+    doc.text("FreelanceOS · Professional Document Services · Confidential", margin, 289);
+    doc.setTextColor(...ACCENT);
+    doc.text(`Page ${page}`, W - margin, 289, { align: "right" });
+};
+
+const drawSectionBar = (
+    doc: jsPDF,
+    yPos: number,
+    label: string,
+    margin = 20,
+    contentWidth = 170
+): number => {
+    doc.setFillColor(...CREAM);
+    doc.rect(margin, yPos - 1, contentWidth, 9, "F");
+    doc.setFillColor(...ACCENT);
+    doc.rect(margin, yPos - 1, 3, 9, "F");
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...ACCENT);
+    doc.text(label.toUpperCase(), margin + 7, yPos + 5);
+    return yPos + 14;
 };
 
 /* -------------------------------- */
-/* Contract Generation */
+/* Contract Generation              */
 /* -------------------------------- */
 
 export const generateContractPDF = (data: ContractData) => {
@@ -99,191 +157,216 @@ export const generateContractPDF = (data: ContractData) => {
     const pageWidth = 210;
     const contentWidth = 170;
 
-    let yPos = 55;
+    let yPos = 56;
     let pageNumber = 1;
+    const ref = `CTR-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
 
     const refreshHeader = () => {
-        addDocumentHeader(doc, "Agreement", "Legal & Binding Service Agreement", `CTR-${Math.random().toString(36).substr(2, 6).toUpperCase()}`);
+        addDocumentHeader(doc, "Contract", ref, "Legal & Binding Service Agreement");
     };
 
     const checkPageBreak = (space: number) => {
-        if (yPos + space > 270) {
+        if (yPos + space > 268) {
             addDocumentFooter(doc, pageNumber);
             doc.addPage();
             pageNumber++;
             refreshHeader();
-            yPos = 55;
+            yPos = 56;
         }
-    };
-
-    const drawSectionHeader = (title: string, subtitle?: string) => {
-        checkPageBreak(25);
-        // Explicit light background instead of questionable alpha
-        doc.setFillColor(243, 244, 252);
-        doc.rect(margin, yPos - 5, contentWidth, 10, "F");
-
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(67, 56, 202); // Darker indigo for high contrast
-        doc.text(title.toUpperCase(), margin + 3, yPos + 1.5);
-
-        if (subtitle) {
-            doc.setFontSize(8);
-            doc.setFont("helvetica", "italic");
-            doc.setTextColor(156, 163, 175);
-            doc.text(subtitle, 187, yPos + 1.5, { align: "right" });
-        }
-
-        yPos += 12;
     };
 
     refreshHeader();
 
-    // Document Title
-    doc.setFontSize(22);
+    // ── Document title ──────────────────────────────────────────────────────
+    doc.setFontSize(20);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(17, 24, 39);
+    doc.setTextColor(...INK);
     doc.text(data.title.toUpperCase(), margin, yPos);
+    yPos += 3;
+    doc.setFillColor(...ACCENT);
+    doc.rect(margin, yPos, 36, 1.5, "F");
+    yPos += 12;
 
-    yPos += 15;
+    // ── ARTICLE 1: THE PARTIES ───────────────────────────────────────────────
+    yPos = drawSectionBar(doc, yPos, "Article I · The Parties");
 
-    /* ARTICLE 1: THE PARTIES */
-    drawSectionHeader("ARTICLE 1: THE PARTIES");
-    const sectionStartY = yPos;
-    const colWidth = 75;
-    const leftColX = margin;
-    const rightColX = 110;
+    const cardH = 40;
+    const colWidth = 80;
 
-    // Left Column: Service Provider
-    doc.setFontSize(8);
+    // Provider card
+    doc.setFillColor(...PAPER);
+    doc.roundedRect(margin, yPos, colWidth, cardH, 2, 2, "F");
+    doc.setDrawColor(...CREAM);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(margin, yPos, colWidth, cardH, 2, 2);
+    // Colored cap
+    doc.setFillColor(...SAGE);
+    doc.roundedRect(margin, yPos, colWidth, 7, 2, 2, "F");
+    doc.rect(margin, yPos + 3.5, colWidth, 3.5, "F");
+    doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(156, 163, 175);
-    doc.text("SERVICE PROVIDER", leftColX, yPos);
+    doc.setTextColor(255, 255, 255);
+    doc.text("SERVICE PROVIDER", margin + 4, yPos + 5.2);
 
-    yPos += 5;
-    doc.setFontSize(10);
-    doc.setTextColor(31, 41, 55);
-    doc.text(data.businessDetails?.name || "Independent Contractor", leftColX, yPos);
-
-    doc.setFontSize(9);
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...INK);
+    doc.text(data.businessDetails?.name || "Independent Contractor", margin + 4, yPos + 14);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(75, 85, 99);
+    doc.setTextColor(...MIST);
+    if (data.businessDetails?.email) {
+        doc.text(data.businessDetails.email, margin + 4, yPos + 20);
+    }
     if (data.businessDetails?.address) {
-        yPos += 5;
-        const addr = doc.splitTextToSize(data.businessDetails.address, colWidth);
-        doc.text(addr, leftColX, yPos);
-        yPos += (addr.length * 4);
+        const addrLines = doc.splitTextToSize(data.businessDetails.address, colWidth - 8);
+        doc.text(addrLines, margin + 4, yPos + 27);
     }
     if (data.businessDetails?.taxId) {
-        yPos += 5;
-        doc.text(`Tax ID: ${data.businessDetails.taxId}`, leftColX, yPos);
+        doc.text(`Tax ID: ${data.businessDetails.taxId}`, margin + 4, yPos + 36);
     }
-    const leftColEndY = yPos;
 
-    // Right Column: Client
-    yPos = sectionStartY;
-    doc.setFontSize(8);
+    // Client card
+    const rightX = margin + colWidth + 10;
+    doc.setFillColor(...PAPER);
+    doc.roundedRect(rightX, yPos, colWidth, cardH, 2, 2, "F");
+    doc.setDrawColor(...CREAM);
+    doc.roundedRect(rightX, yPos, colWidth, cardH, 2, 2);
+    doc.setFillColor(...INDIGO);
+    doc.roundedRect(rightX, yPos, colWidth, 7, 2, 2, "F");
+    doc.rect(rightX, yPos + 3.5, colWidth, 3.5, "F");
+    doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(156, 163, 175);
-    doc.text("CLIENT / BUYER", rightColX, yPos);
+    doc.setTextColor(255, 255, 255);
+    doc.text("CLIENT / BUYER", rightX + 4, yPos + 5.2);
 
-    yPos += 5;
-    doc.setFontSize(10);
-    doc.setTextColor(31, 41, 55);
-    doc.text(data.clientName, rightColX, yPos);
-
-    doc.setFontSize(9);
+    doc.setFontSize(9.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...INK);
+    doc.text(data.clientName, rightX + 4, yPos + 14);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(75, 85, 99);
-    yPos += 5;
-    doc.text(data.clientEmail, rightColX, yPos);
+    doc.setTextColor(...MIST);
+    doc.text(data.clientEmail, rightX + 4, yPos + 20);
     if (data.clientAddress) {
-        yPos += 5;
-        const cAddr = doc.splitTextToSize(data.clientAddress, colWidth);
-        doc.text(cAddr, rightColX, yPos);
-        yPos += (cAddr.length * 4);
+        const cAddrLines = doc.splitTextToSize(data.clientAddress, colWidth - 8);
+        doc.text(cAddrLines, rightX + 4, yPos + 27);
     }
 
-    yPos = Math.max(leftColEndY, yPos) + 15;
+    yPos += cardH + 14;
 
-    /* ARTICLE 2: SCOPE */
-    drawSectionHeader("ARTICLE 2: SCOPE OF SERVICES", `Project start: ${format(data.startDate, "PPP")}`);
-    doc.setFontSize(10);
+    // ── ARTICLE 2: SCOPE ─────────────────────────────────────────────────────
+    checkPageBreak(40);
+    yPos = drawSectionBar(doc, yPos, `Article II · Scope of Services  ·  Start: ${format(data.startDate, "PPP")}`);
+    doc.setFontSize(9.5);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(55, 65, 81);
+    doc.setTextColor(...SLATE);
     const scopeLines = doc.splitTextToSize(data.scope, contentWidth);
     doc.text(scopeLines, margin, yPos);
-    yPos += (scopeLines.length * 6) + 15;
+    yPos += scopeLines.length * 5.5 + 14;
 
-    /* ARTICLE 3: COMPENSATION */
-    drawSectionHeader("ARTICLE 3: COMPENSATION");
-    doc.setFillColor(243, 244, 246);
-    doc.roundedRect(margin, yPos - 5, contentWidth, 20, 2, 2, "F");
-    doc.setFontSize(10);
+    // ── ARTICLE 3: COMPENSATION ───────────────────────────────────────────────
+    checkPageBreak(30);
+    yPos = drawSectionBar(doc, yPos, "Article III · Compensation");
+    doc.setFillColor(...INK);
+    doc.roundedRect(margin, yPos, contentWidth, 20, 2, 2, "F");
+    doc.setFontSize(9);
     doc.setFont("helvetica", "bold");
-    doc.text("Total Project Value:", margin + 5, yPos + 7);
-    doc.setFontSize(14);
-    doc.setTextColor(79, 70, 229);
-    doc.text(`${data.amount.toLocaleString(undefined, { minimumFractionDigits: 2 })} ${data.currency}`, 185, yPos + 8, { align: "right" });
-    yPos += 25;
+    doc.setTextColor(...FOG);
+    doc.text("TOTAL PROJECT VALUE", margin + 6, yPos + 8);
+    doc.setFontSize(18);
+    doc.setTextColor(...ACCENT);
+    doc.text(
+        `${data.currency} ${fmtNum(data.amount)}`,
+        margin + contentWidth - 4,
+        yPos + 13,
+        { align: "right" }
+    );
+    yPos += 30;
 
-    /* ARTICLE 4: TERMS */
-    drawSectionHeader("ARTICLE 4: TERMS & CONDITIONS");
+    // ── ARTICLE 4: TERMS & CONDITIONS ─────────────────────────────────────────
+    checkPageBreak(20);
+    yPos = drawSectionBar(doc, yPos, "Article IV · Terms & Conditions");
+
     const standardClauses = [
-        { title: "Intellectual Property", text: "All work product created under this agreement shall be the property of the Client upon full payment of the consideration described in Article 3." },
-        { title: "Confidentiality", text: "Both parties agree to maintain strict confidentiality regarding proprietary information shared. This obligation survives termination." },
-        { title: "Indemnification", text: "Provider shall indemnify Client against third-party claims arising from a breach of warranties or intellectual property infringement." },
-        { title: "Termination", text: "Either party may terminate this agreement with 14 days written notice. Payment for work delivered up to termination remains due." },
-        { title: "Governing Law", text: "This agreement shall be governed by laws of the Provider's registered jurisdiction. Both parties submit to local court authority." }
+        {
+            title: "Intellectual Property",
+            text: "All work product created under this agreement shall be the property of the Client upon full payment of the consideration described in Article 3."
+        },
+        {
+            title: "Confidentiality",
+            text: "Both parties agree to maintain strict confidentiality regarding proprietary information shared. This obligation survives termination."
+        },
+        {
+            title: "Indemnification",
+            text: "Provider shall indemnify Client against third-party claims arising from a breach of warranties or intellectual property infringement."
+        },
+        {
+            title: "Termination",
+            text: "Either party may terminate this agreement with 14 days written notice. Payment for work delivered up to termination remains due."
+        },
+        {
+            title: "Governing Law",
+            text: "This agreement shall be governed by laws of the Provider's registered jurisdiction. Both parties submit to local court authority."
+        }
     ];
     const allClauses = [
         ...data.clauses.map(c => ({ title: "Custom Provision", text: c })),
         ...standardClauses
     ];
+
     allClauses.forEach((item, idx) => {
-        checkPageBreak(25);
-        doc.setFontSize(9);
+        const bodyLines = doc.splitTextToSize(item.text, contentWidth - 12);
+        const rowH = bodyLines.length * 5 + 16;
+        checkPageBreak(rowH);
+
+        doc.setFillColor(...(idx % 2 === 0 ? PAPER : ([255, 255, 255] as [number, number, number])));
+        doc.rect(margin, yPos - 3, contentWidth, rowH, "F");
+        // Left accent rule
+        doc.setFillColor(...ACCENT);
+        doc.rect(margin, yPos - 3, 2.5, rowH, "F");
+
+        doc.setFontSize(8.5);
         doc.setFont("helvetica", "bold");
-        doc.setTextColor(31, 41, 55);
-        doc.text(`${idx + 1}. ${item.title}`, margin, yPos);
-        yPos += 5;
+        doc.setTextColor(...INK);
+        doc.text(`${idx + 1}. ${item.title}`, margin + 7, yPos + 5);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(75, 85, 99);
-        const clauseText = doc.splitTextToSize(item.text, contentWidth);
-        doc.text(clauseText, margin, yPos);
-        yPos += (clauseText.length * 5) + 6;
+        doc.setTextColor(...MIST);
+        doc.text(bodyLines, margin + 7, yPos + 11);
+        yPos += rowH + 2;
     });
 
-    /* ARTICLE 5: SIGNATURES */
-    checkPageBreak(60);
-    drawSectionHeader("ARTICLE 5: SIGNATURES");
+    // ── ARTICLE 5: SIGNATURES ─────────────────────────────────────────────────
+    checkPageBreak(65);
+    yPos += 6;
+    yPos = drawSectionBar(doc, yPos, "Article V · Signatures");
     yPos += 10;
-    doc.setDrawColor(209, 213, 219);
 
-    // Provider Side
-    doc.line(margin, yPos + 15, margin + 75, yPos + 15);
-    doc.setFontSize(8); doc.setFont("helvetica", "bold");
-    doc.text("SIGNATURE (PROVIDER)", margin, yPos + 20);
-    doc.setFont("helvetica", "normal");
-    doc.text("Printed Name: ________________________", margin, yPos + 25);
-    doc.text("Title: ________________________", margin, yPos + 30);
-    doc.text("Date: ________________________", margin, yPos + 35);
+    const sigPairs: [string, number][] = [
+        ["SERVICE PROVIDER", margin],
+        ["CLIENT / BUYER",   margin + colWidth + 10]
+    ];
 
-    // Client Side
-    doc.line(110, yPos + 15, 185, yPos + 15);
-    doc.setFontSize(8); doc.setFont("helvetica", "bold");
-    doc.text("SIGNATURE (CLIENT)", 110, yPos + 20);
-    doc.setFont("helvetica", "normal");
-    doc.text("Printed Name: ________________________", 110, yPos + 25);
-    doc.text("Title: ________________________", 110, yPos + 30);
-    doc.text("Date: ________________________", 110, yPos + 35);
+    sigPairs.forEach(([label, x]) => {
+        doc.setDrawColor(...FOG);
+        doc.setLineWidth(0.4);
+        doc.line(x, yPos + 18, x + 75, yPos + 18);
+        doc.setFontSize(7.5);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(...MIST);
+        doc.text(label, x, yPos + 23);
+        doc.setFont("helvetica", "normal");
+        doc.text("Name: _____________________________", x, yPos + 30);
+        doc.text("Title: _____________________________", x, yPos + 37);
+        doc.text("Date:  _____________________________", x, yPos + 44);
+    });
 
     addDocumentFooter(doc, pageNumber);
     doc.save(`Contract_${data.title.replace(/\s+/g, "_")}.pdf`);
 };
 
 /* -------------------------------- */
-/* Invoice Generation */
+/* Invoice Generation               */
 /* -------------------------------- */
 
 export const generateInvoicePDF = (data: InvoiceData) => {
@@ -292,122 +375,150 @@ export const generateInvoicePDF = (data: InvoiceData) => {
     const pageWidth = 210;
     const contentWidth = 170;
 
-    let yPos = 55;
+    let yPos = 56;
     let pageNumber = 1;
 
     const refreshHeader = () => {
-        addDocumentHeader(doc, "Invoice", "Professional Billing Statement", data.invoiceNumber);
+        addDocumentHeader(doc, "Invoice", data.invoiceNumber, "Professional Billing Statement");
     };
 
     const checkPageBreak = (space: number) => {
-        if (yPos + space > 270) {
+        if (yPos + space > 268) {
             addDocumentFooter(doc, pageNumber);
             doc.addPage();
             pageNumber++;
             refreshHeader();
-            yPos = 55;
+            yPos = 56;
         }
     };
 
     refreshHeader();
 
-    /* BILLING INFO CARD */
-    doc.setFillColor(243, 244, 252);
-    doc.roundedRect(margin, yPos, contentWidth, 35, 2, 2, "F");
+    // ── Billing info card ─────────────────────────────────────────────────────
+    doc.setFillColor(...PAPER);
+    doc.roundedRect(margin, yPos, contentWidth, 34, 2, 2, "F");
+    doc.setDrawColor(...CREAM);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(margin, yPos, contentWidth, 34, 2, 2);
 
-    doc.setFontSize(8);
+    // Vertical divider
+    doc.setDrawColor(...CREAM);
+    doc.line(margin + 90, yPos + 6, margin + 90, yPos + 30);
+
+    doc.setFontSize(7);
     doc.setFont("helvetica", "bold");
-    doc.setTextColor(156, 163, 175);
-    doc.text("BILL TO:", margin + 5, yPos + 8);
-    doc.text("FROM:", 115, yPos + 8);
+    doc.setTextColor(...MIST);
+    doc.text("BILL TO", margin + 5, yPos + 8);
+    doc.text("FROM", margin + 95, yPos + 8);
 
     doc.setFontSize(10);
-    doc.setTextColor(31, 41, 55);
-    doc.text(data.clientName, margin + 5, yPos + 14);
-    doc.text(data.businessDetails?.name || "Service Provider", 115, yPos + 14);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...INK);
+    doc.text(data.clientName, margin + 5, yPos + 15);
+    doc.text(data.businessDetails?.name || "Service Provider", margin + 95, yPos + 15);
 
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
-    doc.setTextColor(75, 85, 99);
+    doc.setTextColor(...MIST);
     if (data.clientAddress) {
-        const lines = doc.splitTextToSize(data.clientAddress, 80);
-        doc.text(lines, margin + 5, yPos + 19);
+        const lines = doc.splitTextToSize(data.clientAddress, 82);
+        doc.text(lines, margin + 5, yPos + 21);
     }
     if (data.businessDetails?.address) {
-        const lines = doc.splitTextToSize(data.businessDetails.address, 80);
-        doc.text(lines, 115, yPos + 19);
+        const lines = doc.splitTextToSize(data.businessDetails.address, 72);
+        doc.text(lines, margin + 95, yPos + 21);
     }
 
-    yPos += 45;
+    yPos += 42;
 
-    /* INVOICE DETAILS */
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "bold");
-    doc.setTextColor(107, 114, 128);
-    doc.text("INVOICE DATE", margin, yPos);
-    doc.text("DUE DATE", 70, yPos);
-    doc.text("TAX ID", 130, yPos);
+    // ── Invoice meta strip ────────────────────────────────────────────────────
+    const metaLabels: [string, number, string][] = [
+        ["INVOICE DATE", margin,       format(data.issuedAt, "MMM dd, yyyy")],
+        ["DUE DATE",     margin + 60,  format(data.dueDate, "MMM dd, yyyy")],
+        ["TAX ID",       margin + 120, data.businessDetails?.taxId || "N/A"]
+    ];
 
-    yPos += 6;
-    doc.setFontSize(10);
-    doc.setTextColor(31, 41, 55);
-    doc.setFont("helvetica", "normal");
-    doc.text(format(data.issuedAt, "MMM dd, yyyy"), margin, yPos);
-    doc.text(format(data.dueDate, "MMM dd, yyyy"), 70, yPos);
-    doc.text(data.businessDetails?.taxId || "N/A", 130, yPos);
+    metaLabels.forEach(([label, x, value]) => {
+        doc.setFontSize(7);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(...MIST);
+        doc.text(label, x, yPos);
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...INK);
+        doc.text(value, x, yPos + 6);
+    });
+    yPos += 18;
 
-    yPos += 15;
-
-    /* ITEMS TABLE */
-    doc.setFillColor(79, 70, 229);
+    // ── Line-items table ──────────────────────────────────────────────────────
+    // Table header
+    doc.setFillColor(...INK);
     doc.rect(margin, yPos, contentWidth, 10, "F");
-    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.text("Description", margin + 3, yPos + 7);
-    doc.text("Qty", margin + 100, yPos + 7, { align: "right" });
-    doc.text("Rate", margin + 130, yPos + 7, { align: "right" });
-    doc.text("Amount", margin + 167, yPos + 7, { align: "right" });
-
+    doc.setTextColor(255, 255, 255);
+    doc.text("Description",          margin + 4,   yPos + 7);
+    doc.text("Qty",  margin + 102,   yPos + 7, { align: "right" });
+    doc.text("Rate", margin + 132,   yPos + 7, { align: "right" });
+    doc.text("Amount", margin + 168, yPos + 7, { align: "right" });
     yPos += 12;
-    doc.setTextColor(31, 41, 55);
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
 
+    // Rows
     data.items.forEach((item, idx) => {
-        checkPageBreak(15);
-        if (idx % 2 === 0) {
-            doc.setFillColor(249, 250, 251);
-            doc.rect(margin, yPos - 5, contentWidth, 10, "F");
-        }
         const lines = doc.splitTextToSize(item.description, 90);
-        doc.text(lines, margin + 3, yPos);
-        doc.text(item.quantity.toString(), margin + 100, yPos, { align: "right" });
-        doc.text(item.rate.toLocaleString(undefined, { minimumFractionDigits: 2 }), margin + 130, yPos, { align: "right" });
-        doc.text(item.amount.toLocaleString(undefined, { minimumFractionDigits: 2 }), margin + 167, yPos, { align: "right" });
-        yPos += (lines.length * 5) + 5;
+        const rowH = lines.length * 5.5 + 7;
+        checkPageBreak(rowH);
+
+        if (idx % 2 === 0) {
+            doc.setFillColor(...PAPER);
+            doc.rect(margin, yPos - 4, contentWidth, rowH, "F");
+        }
+
+        doc.setFontSize(8.5);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...SLATE);
+        doc.text(lines, margin + 4, yPos);
+
+        doc.setTextColor(...INK);
+        doc.text(item.quantity.toString(),       margin + 102, yPos, { align: "right" });
+        doc.text(fmtNum(item.rate),              margin + 132, yPos, { align: "right" });
+        doc.setFont("helvetica", "bold");
+        doc.text(fmtNum(item.amount),            margin + 168, yPos, { align: "right" });
+
+        yPos += rowH;
     });
 
-    /* TOTAL BOX */
-    checkPageBreak(40);
-    yPos += 10;
-    doc.setDrawColor(79, 70, 229);
-    doc.setLineWidth(0.5);
-    doc.line(125, yPos, 185, yPos);
+    // ── Total block ───────────────────────────────────────────────────────────
+    checkPageBreak(36);
     yPos += 8;
-    doc.setFontSize(11);
-    doc.setFont("helvetica", "bold");
-    doc.text("PAYMENT DUE", 125, yPos);
-    doc.setFontSize(16);
-    doc.setTextColor(79, 70, 229);
-    doc.text(`${data.total.toLocaleString(undefined, { minimumFractionDigits: 2 })} ${data.currency}`, 185, yPos, { align: "right" });
 
-    yPos += 20;
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(107, 114, 128);
-    doc.text("Please complete payment within 14 days of receipt via bank transfer or online portal.", margin, yPos);
-    doc.text("Thank you for your business!", margin, yPos + 5);
+    doc.setFillColor(...INK);
+    doc.roundedRect(margin + 95, yPos, 75, 22, 2, 2, "F");
+    doc.setFontSize(7.5);
+    doc.setFont("helvetica", "bold");
+    doc.setTextColor(...FOG);
+    doc.text("TOTAL DUE", margin + 95 + 75 - 4, yPos + 8, { align: "right" });
+    doc.setFontSize(16);
+    doc.setTextColor(...ACCENT);
+    doc.text(
+        `${data.currency} ${fmtNum(data.total)}`,
+        margin + 95 + 75 - 4,
+        yPos + 17,
+        { align: "right" }
+    );
+
+    yPos += 32;
+
+    // ── Payment note ──────────────────────────────────────────────────────────
+    doc.setFontSize(8.5);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(...MIST);
+    doc.text(
+        "Please complete payment within 14 days of receipt via bank transfer or online portal.",
+        margin,
+        yPos
+    );
+    doc.text("Thank you for your business!", margin, yPos + 6);
 
     addDocumentFooter(doc, pageNumber);
     doc.save(`Invoice_${data.invoiceNumber}.pdf`);
