@@ -8,7 +8,7 @@ export default function Footer() {
     return (
         <footer className="bg-slate-950 border-t border-white/5 pt-20 pb-10">
             <div className="max-w-7xl mx-auto px-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-16">
                     {/* Brand */}
                     <div className="space-y-6">
                         <Link href="/" className="flex items-center gap-2 group">
@@ -53,11 +53,26 @@ export default function Footer() {
                     <div>
                         <h4 className="text-white font-semibold mb-6">Company</h4>
                         <ul className="space-y-4">
-                            {["About", "Careers", "Privacy", "Terms"].map((link) => (
-                                <li key={link}>
-                                    <Link href="#" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">{link}</Link>
+                            {[
+                                { name: "About", href: "#" },
+                                { name: "Careers", href: "#" },
+                                { name: "Privacy", href: "#" },
+                                { name: "Terms", href: "#" },
+                            ].map((link) => (
+                                <li key={link.name}>
+                                    <Link href={link.href} className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">{link.name}</Link>
                                 </li>
                             ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h4 className="text-white font-semibold mb-6">Get Access</h4>
+                        <ul className="space-y-4">
+                            <li><Link href="/waitlist" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Join Waitlist</Link></li>
+                            <li><Link href="/waitlist?tab=demo" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Schedule a Demo</Link></li>
+                            <li><Link href="/login" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Sign In</Link></li>
+                            <li><Link href="/pricing" className="text-sm text-slate-400 hover:text-indigo-400 transition-colors">Pricing</Link></li>
                         </ul>
                     </div>
 

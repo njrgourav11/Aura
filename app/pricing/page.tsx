@@ -124,13 +124,13 @@ export default function PricingPage() {
                                 </ul>
 
                                 <Link
-                                    href="/register"
+                                    href="/waitlist"
                                     className={`w-full py-4 rounded-xl font-bold text-center transition-all ${plan.popular
                                             ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-xl shadow-indigo-600/20"
                                             : "bg-white/5 text-white hover:bg-white/10"
                                         }`}
                                 >
-                                    {plan.cta}
+                                    Join Waitlist
                                 </Link>
                             </div>
                         ))}
@@ -189,11 +189,11 @@ export default function PricingPage() {
                     <div className="glass-card p-12 text-center border-white/5 bg-gradient-to-tr from-indigo-500/10 to-transparent">
                         <h2 className="text-3xl md:text-5xl font-black mb-8 tracking-tight">Ready to Automate Your Business?</h2>
                         <div className="flex flex-col sm:flex-row items-center gap-4 justify-center">
-                            <Link href="/register" className="btn-primary px-10 py-4 text-lg">
-                                <span>Get Started Free <ArrowRight size={18} /></span>
+                            <Link href="/waitlist" className="btn-primary px-10 py-4 text-lg">
+                                <span>Join the Waitlist <ArrowRight size={18} /></span>
                             </Link>
-                            <Link href="/" className="btn-secondary px-10 py-4 text-lg bg-white/5 border-white/10 text-white">
-                                View Demo
+                            <Link href="/waitlist?tab=demo" className="btn-secondary px-10 py-4 text-lg bg-white/5 border-white/10 text-white">
+                                Schedule a Demo
                             </Link>
                         </div>
                     </div>

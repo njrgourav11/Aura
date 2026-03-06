@@ -172,18 +172,18 @@ export default async function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 mb-10 md:mb-16 w-full sm:w-auto">
-              <Link href="/register" className="btn-primary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg w-full sm:w-auto text-center">
-                <span>Start Free <ArrowRight className="w-5 h-5" /></span>
+              <Link href="/waitlist" className="btn-primary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg w-full sm:w-auto text-center">
+                <span>Join the Waitlist <ArrowRight className="w-5 h-5" /></span>
               </Link>
-              <Link href="#demo" className="btn-secondary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg bg-white/5 hover:bg-white/10 border-white/10 w-full sm:w-auto text-center">
-                See Demo
+              <Link href="/waitlist?tab=demo" className="btn-secondary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg bg-white/5 hover:bg-white/10 border-white/10 w-full sm:w-auto text-center">
+                Schedule a Demo
               </Link>
             </div>
 
             <div className="flex flex-wrap items-center justify-center gap-4 md:gap-8 text-xs sm:text-sm text-slate-500 font-medium">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                No credit card required
+                Limited early access spots
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-500 flex-shrink-0" />
@@ -346,8 +346,8 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/register" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
-                Explore Contracts
+              <Link href="/waitlist" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
+                Get Early Access
               </Link>
             </div>
           </div>
@@ -374,8 +374,8 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/register" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
-                Master Invoicing
+              <Link href="/waitlist" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
+                Get Early Access
               </Link>
             </div>
             <div>
@@ -420,8 +420,8 @@ export default async function Home() {
                   </li>
                 ))}
               </ul>
-              <Link href="/register" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
-                View Dashboard
+              <Link href="/waitlist" className="btn-secondary py-3 px-6 bg-white/5 border-white/10 text-white inline-block">
+                Get Early Access
               </Link>
             </div>
           </div>
@@ -593,13 +593,13 @@ export default async function Home() {
                 </ul>
                 <div className="mt-8">
                   <Link
-                    href="/register"
+                    href="/waitlist"
                     className={`block w-full text-center py-3 rounded-xl font-bold text-sm transition-all ${plan.popular
                         ? "bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
                         : "bg-white/5 hover:bg-white/10 text-white border border-white/10"
                       }`}
                   >
-                    Get Started
+                    Join Waitlist
                   </Link>
                 </div>
               </div>
@@ -621,15 +621,15 @@ export default async function Home() {
             Business Like a Pro
           </h2>
           <p className="text-slate-400 text-base md:text-lg mb-8 md:mb-12 max-w-xl mx-auto">
-            Join 500+ freelancers who have automated their administrative overhead.
-            Get started for free today.
+            Limited early access spots available. Join our waitlist or book a
+            personalised demo with the team.
           </p>
           <div className="flex flex-col sm:flex-row items-center gap-3 md:gap-4 justify-center">
-            <Link href="/register" className="btn-primary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg w-full sm:w-auto text-center">
-              <span>Start Free <ArrowRight size={18} /></span>
+            <Link href="/waitlist" className="btn-primary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg w-full sm:w-auto text-center">
+              <span>Join the Waitlist <ArrowRight size={18} /></span>
             </Link>
-            <Link href="#demo" className="btn-secondary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg bg-white/5 border-white/10 text-white w-full sm:w-auto text-center">
-              Book Demo
+            <Link href="/waitlist?tab=demo" className="btn-secondary px-8 py-3.5 md:px-10 md:py-4 text-base md:text-lg bg-white/5 border-white/10 text-white w-full sm:w-auto text-center">
+              Schedule a Demo
             </Link>
           </div>
         </div>

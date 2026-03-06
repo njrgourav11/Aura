@@ -7,7 +7,8 @@ const navLinks = [
     { label: "Features", href: "/#features" },
     { label: "Demo", href: "/#demo" },
     { label: "Pricing", href: "/pricing" },
-    { label: "Security", href: "/#security" }
+    { label: "Security", href: "/#security" },
+    { label: "Schedule Demo", href: "/waitlist?tab=demo" }
 ];
 
 export default function Navbar() {
@@ -58,8 +59,8 @@ export default function Navbar() {
                     <Link href="/login" className="text-sm font-medium text-slate-300 hover:text-white transition-colors px-4 py-2">
                         Log in
                     </Link>
-                    <Link href="/register" className="btn-primary py-2 px-5 text-sm">
-                        <span>Get Started <ArrowRight className="w-4 h-4 ml-1" /></span>
+                    <Link href="/waitlist" className="btn-primary py-2 px-5 text-sm">
+                        <span>Join Waitlist <ArrowRight className="w-4 h-4 ml-1" /></span>
                     </Link>
                 </div>
 
@@ -91,13 +92,13 @@ export default function Navbar() {
                             {item.label}
                         </Link>
                     ))}
-                    <div className="pt-3 border-t border-white/5 mt-2">
+                    <div className="pt-3 border-t border-white/5 mt-2 space-y-2">
                         <Link
-                            href="/register"
+                            href="/waitlist"
                             onClick={handleLinkClick}
                             className="btn-primary py-3 text-sm w-full text-center block"
                         >
-                            <span>Get Started <ArrowRight className="w-4 h-4 inline ml-1" /></span>
+                            <span>Join Waitlist <ArrowRight className="w-4 h-4 inline ml-1" /></span>
                         </Link>
                     </div>
                 </div>
