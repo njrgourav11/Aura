@@ -10,13 +10,13 @@ import {
   Users,
   Shield,
   Globe,
-  LayoutDashboard,
   CheckCircle2,
   AlertCircle,
   Lock
 } from "lucide-react";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import DemoSlideshow from "@/components/home/DemoSlideshow";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
@@ -204,16 +204,12 @@ export default async function Home() {
                   <div className="w-3 h-3 rounded-full bg-amber-500/20" />
                   <div className="w-3 h-3 rounded-full bg-emerald-500/20" />
                 </div>
-                <div className="p-4 md:p-8 grid grid-cols-4 md:grid-cols-12 gap-3 md:gap-6 bg-slate-950/50">
-                  <div className="col-span-4 md:col-span-4 space-y-3 md:space-y-6">
-                    <div className="h-20 md:h-32 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 animate-pulse" />
-                    <div className="h-28 md:h-48 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 animate-pulse" />
-                  </div>
-                  <div className="col-span-4 md:col-span-8 space-y-3 md:space-y-6">
-                    <div className="h-32 md:h-56 rounded-xl md:rounded-2xl bg-indigo-500/5 border border-indigo-500/10 animate-pulse" />
-                    <div className="h-16 md:h-24 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 animate-pulse" />
-                  </div>
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/client.png"
+                  alt="FreelanceOS client management dashboard"
+                  className="w-full h-auto block"
+                />
               </div>
             </div>
           </div>
@@ -314,38 +310,7 @@ export default async function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
-            <div className="lg:col-span-5 space-y-6 md:space-y-8">
-              {[
-                { step: "01", title: "Add a Client", desc: "Easily organize contact details and project history." },
-                { step: "02", title: "Create a Contract", desc: "Generate ironclad agreements with pre-built clauses." },
-                { step: "03", title: "Send Invoice", desc: "Beautiful, tax-compliant invoices sent in one click." },
-                { step: "04", title: "Log Payment", desc: "Track revenue and update your dashboard automatically." }
-              ].map((item, i) => (
-                <div key={i} className="flex gap-4 md:gap-6 group">
-                  <div className="text-xl md:text-2xl font-black text-white/10 group-hover:text-indigo-500/50 transition-colors flex-shrink-0">
-                    {item.step}
-                  </div>
-                  <div>
-                    <h3 className="text-base md:text-lg font-bold text-white mb-1">{item.title}</h3>
-                    <p className="text-slate-400 text-sm leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="lg:col-span-7 bg-slate-950 border border-white/5 rounded-2xl md:rounded-3xl p-4 shadow-2xl relative overflow-hidden group">
-              <div className="aspect-video bg-indigo-500/5 rounded-xl md:rounded-2xl flex items-center justify-center relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 to-transparent" />
-                <LayoutDashboard className="w-12 md:w-20 h-12 md:h-20 text-indigo-500/20 group-hover:scale-110 transition-transform duration-700" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 md:w-16 h-12 md:h-16 rounded-full bg-indigo-500 flex items-center justify-center shadow-xl shadow-indigo-500/40 cursor-pointer hover:scale-110 transition-transform">
-                    <div className="w-0 h-0 border-t-[7px] border-t-transparent border-l-[10px] border-l-white border-b-[7px] border-b-transparent ml-1" />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DemoSlideshow />
         </div>
       </section>
 
@@ -355,10 +320,12 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
             <div className="order-2 lg:order-1">
-              <div className="glass-card p-4 aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-indigo-500/5 to-transparent">
-                <div className="h-full w-full border border-dashed border-white/10 rounded-2xl flex items-center justify-center">
-                  <FileSignature className="w-16 md:w-24 h-16 md:h-24 text-indigo-500/20" />
-                </div>
+              <div className="glass-card p-4 max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-indigo-500/5 to-transparent overflow-hidden">
+                <img
+                  src="/contracts.png"
+                  alt="Contracts feature screenshot"
+                  className="w-full h-auto rounded-2xl object-cover"
+                />
               </div>
             </div>
             <div className="order-1 lg:order-2">
@@ -412,10 +379,12 @@ export default async function Home() {
               </Link>
             </div>
             <div>
-              <div className="glass-card p-4 aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-fuchsia-500/5 to-transparent">
-                <div className="h-full w-full border border-dashed border-white/10 rounded-2xl flex items-center justify-center">
-                  <Receipt className="w-16 md:w-24 h-16 md:h-24 text-fuchsia-500/20" />
-                </div>
+              <div className="glass-card p-4 max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-fuchsia-500/5 to-transparent overflow-hidden">
+                <img
+                  src="/invoices.png"
+                  alt="Smart Invoice feature screenshot"
+                  className="w-full h-auto rounded-2xl object-cover"
+                />
               </div>
             </div>
           </div>
@@ -425,10 +394,12 @@ export default async function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 md:gap-16 items-center">
             <div className="order-2 lg:order-1">
-              <div className="glass-card p-4 aspect-square max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-emerald-500/5 to-transparent">
-                <div className="h-full w-full border border-dashed border-white/10 rounded-2xl flex items-center justify-center">
-                  <TrendingUp className="w-16 md:w-24 h-16 md:h-24 text-emerald-500/20" />
-                </div>
+              <div className="glass-card p-4 max-w-xs sm:max-w-sm md:max-w-md mx-auto border-white/5 bg-gradient-to-br from-emerald-500/5 to-transparent overflow-hidden">
+                <img
+                  src="/dashboard.png"
+                  alt="Real-Time Business Analytics dashboard screenshot"
+                  className="w-full h-auto rounded-2xl object-cover"
+                />
               </div>
             </div>
             <div className="order-1 lg:order-2">
@@ -518,7 +489,7 @@ export default async function Home() {
               { title: "Contract Generated", icon: <FileSignature size={20} /> },
               { title: "Invoice Sent", icon: <Receipt size={20} /> },
               { title: "Payment Logged", icon: <TrendingUp size={20} /> },
-              { title: "Dashboard Updated", icon: <LayoutDashboard size={20} /> }
+              { title: "Dashboard Updated", icon: <TrendingUp size={20} /> }
             ].map((step, i) => (
               <div key={i} className="flex md:flex-col items-center gap-4 group w-full md:w-auto">
                 <div className="w-14 md:w-20 h-14 md:h-20 rounded-xl md:rounded-2xl bg-slate-900 border border-white/5 flex items-center justify-center text-indigo-400 group-hover:scale-110 group-hover:border-indigo-500/30 group-hover:bg-indigo-500/5 transition-all duration-500 shadow-xl flex-shrink-0">
@@ -578,30 +549,59 @@ export default async function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-5 md:gap-8 mb-10 md:mb-16">
             {[
-              { name: "Starter", price: "$9", desc: "Best for beginners" },
-              { name: "Pro", price: "$29", desc: "Best for professionals", popular: true },
-              { name: "Agency", price: "$79", desc: "For freelance teams" }
+              {
+                name: "Starter", price: "$9", desc: "Best for beginners",
+                features: ["Up to 5 clients", "10 invoices / month", "Smart Contracts", "PDF generation", "Payment tracking", "Email support"],
+                unavailable: ["Client portal", "Team members", "Priority support"],
+              },
+              {
+                name: "Pro", price: "$29", desc: "Best for professionals", popular: true,
+                features: ["Unlimited clients", "Unlimited invoices", "Smart Contracts", "PDF generation", "Revenue analytics", "Client portal"],
+                unavailable: ["Team members"],
+              },
+              {
+                name: "Agency", price: "$79", desc: "For freelance teams",
+                features: ["Unlimited clients", "Unlimited invoices", "Smart Contracts", "PDF generation", "Revenue analytics", "Client portal", "Up to 10 team members", "Priority support"],
+                unavailable: [],
+              },
             ].map((plan, i) => (
-              <div key={i} className={`glass-card p-6 md:p-8 border-white/5 relative ${plan.popular ? 'border-indigo-500/30 bg-indigo-500/5' : ''}`}>
+              <div key={i} className={`glass-card p-6 md:p-8 border-white/5 relative flex flex-col ${plan.popular ? "border-indigo-500/30 bg-indigo-500/5" : ""}`}>
                 {plan.popular && (
                   <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-indigo-500 text-white text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-full whitespace-nowrap">
                     Most Popular
                   </div>
                 )}
                 <h3 className="text-lg md:text-xl font-bold text-white mb-2">{plan.name}</h3>
-                <div className="text-3xl md:text-4xl font-black text-white mb-2">{plan.price}<span className="text-xs md:text-sm font-normal text-slate-500">/mo</span></div>
-                <p className="text-slate-500 text-xs md:text-sm mb-6 md:mb-8">{plan.desc}</p>
-                <div className="w-full h-px bg-white/5 mb-6 md:mb-8" />
-                <ul className="text-slate-400 text-sm text-left space-y-3 md:space-y-4">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" />
-                    {plan.name === 'Starter' ? 'Up to 5 clients' : 'Unlimited clients'}
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" />
-                    Smart Contracts
-                  </li>
+                <div className="text-3xl md:text-4xl font-black text-white mb-2">
+                  {plan.price}<span className="text-xs md:text-sm font-normal text-slate-500">/mo</span>
+                </div>
+                <p className="text-slate-500 text-xs md:text-sm mb-5">{plan.desc}</p>
+                <div className="w-full h-px bg-white/5 mb-5" />
+                <ul className="text-sm text-left space-y-3 flex-1">
+                  {plan.features.map((f, j) => (
+                    <li key={j} className="flex items-center gap-2 text-slate-300">
+                      <CheckCircle2 size={14} className="text-emerald-500 flex-shrink-0" />
+                      {f}
+                    </li>
+                  ))}
+                  {plan.unavailable?.map((f, j) => (
+                    <li key={j} className="flex items-center gap-2 text-slate-600 line-through">
+                      <CheckCircle2 size={14} className="text-slate-700 flex-shrink-0" />
+                      {f}
+                    </li>
+                  ))}
                 </ul>
+                <div className="mt-8">
+                  <Link
+                    href="/register"
+                    className={`block w-full text-center py-3 rounded-xl font-bold text-sm transition-all ${plan.popular
+                        ? "bg-indigo-500 hover:bg-indigo-600 text-white shadow-lg shadow-indigo-500/20"
+                        : "bg-white/5 hover:bg-white/10 text-white border border-white/10"
+                      }`}
+                  >
+                    Get Started
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
