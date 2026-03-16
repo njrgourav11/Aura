@@ -1,11 +1,11 @@
 "use client";
-
 import React from "react";
 import { generateInvoicePDF, generateContractPDF } from "@/lib/pdf";
+import { generateAnalysisPDF } from "@/lib/pdf/analysis";
 import { FileText, Download } from "lucide-react";
 
 interface PortalActionsProps {
-    type: "invoice" | "contract";
+    type: "invoice" | "contract" | "project";
     data: any;
     businessDetails: any;
     clientName?: string;
@@ -24,7 +24,7 @@ function buildBusinessDetails(user: any) {
 }
 
 export function PortalDownloadButton({ type, data, businessDetails, clientName, clientAddress, clientEmail }: PortalActionsProps) {
-    const handleDownload = () => {
+    const handleDownload = async () => {
         const bd = buildBusinessDetails(businessDetails);
         if (type === "invoice") {
             generateInvoicePDF({
@@ -38,7 +38,7 @@ export function PortalDownloadButton({ type, data, businessDetails, clientName, 
                 dueDate: new Date(data.dueDate),
                 businessDetails: bd,
             });
-        } else {
+        } else if (type === "contract") {
             generateContractPDF({
                 title: data.title || "Service Agreement",
                 clientName: clientName || data.clientName || "Client",
@@ -51,6 +51,14 @@ export function PortalDownloadButton({ type, data, businessDetails, clientName, 
                 scope: data.scope || "Professional services as agreed.",
                 clauses: data.clauses || [],
                 businessDetails: bd,
+            });
+        } else if (type === "project") {
+            // Use premium canvas format
+            await generateAnalysisPDF({
+                ...data,
+                clientId: {
+                    name: clientName || data.clientName || "Client",
+                }
             });
         }
     };
@@ -67,7 +75,7 @@ export function PortalDownloadButton({ type, data, businessDetails, clientName, 
 }
 
 export function PortalViewButton({ type, data, businessDetails, clientName, clientAddress, clientEmail }: PortalActionsProps) {
-    const handleView = () => {
+    const handleView = async () => {
         const bd = buildBusinessDetails(businessDetails);
         if (type === "invoice") {
             generateInvoicePDF({
@@ -81,7 +89,7 @@ export function PortalViewButton({ type, data, businessDetails, clientName, clie
                 dueDate: new Date(data.dueDate),
                 businessDetails: bd,
             });
-        } else {
+        } else if (type === "contract") {
             generateContractPDF({
                 title: data.title || "Service Agreement",
                 clientName: clientName || data.clientName || "Client",
@@ -94,6 +102,14 @@ export function PortalViewButton({ type, data, businessDetails, clientName, clie
                 scope: data.scope || "Professional services as agreed.",
                 clauses: data.clauses || [],
                 businessDetails: bd,
+            });
+        } else if (type === "project") {
+            // Use premium canvas format
+            await generateAnalysisPDF({
+                ...data,
+                clientId: {
+                    name: clientName || data.clientName || "Client",
+                }
             });
         }
     };

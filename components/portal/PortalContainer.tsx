@@ -195,7 +195,29 @@ function ProjectCard({ project, client, user }: { project: any; client: any; use
                         </div>
                     )}
 
-                    {totalTasks === 0 && !project.milestones?.length && !project.notes?.length && (
+                    {project.analysis && (
+                        <div>
+                            <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 flex items-center gap-1.5">
+                                <FileText size={11} className="text-purple-400" /> Project Analysis
+                            </p>
+                            <div className="flex gap-2">
+                                <PortalViewButton
+                                    type="project"
+                                    data={project}
+                                    businessDetails={user}
+                                    clientName={client.name}
+                                />
+                                <PortalDownloadButton
+                                    type="project"
+                                    data={project}
+                                    businessDetails={user}
+                                    clientName={client.name}
+                                />
+                            </div>
+                        </div>
+                    )}
+
+                    {totalTasks === 0 && !project.milestones?.length && !project.notes?.length && !project.analysis && (
                         <p className="text-slate-600 text-sm text-center py-4">No details added yet.</p>
                     )}
                 </div>
