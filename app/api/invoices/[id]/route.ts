@@ -5,6 +5,7 @@ import connectToDatabase from "@/lib/db";
 import { Invoice } from "@/lib/models/InvoicePayment";
 import "@/lib/models/UserClient";
 import "@/lib/models/Contract";
+import { processTrigger } from "@/lib/automation-engine";
 
 export async function GET(
     req: Request,
@@ -57,6 +58,11 @@ export async function PUT(
 
         if (!invoice) {
             return NextResponse.json({ error: "Invoice not found" }, { status: 404 });
+        }
+
+        // Trigger automations if status changed to Paid
+        if (data.status === 'Paid') {
+            await processTrigger((session.user as any).id, 'INVOICE_PAID', { invoice });
         }
 
         return NextResponse.json(invoice);

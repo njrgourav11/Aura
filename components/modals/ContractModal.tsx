@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { X, Loader2, Plus, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ScopeCanvasEditor, { ScopeSection } from "../editor/ScopeCanvasEditor";
 
 interface ContractModalProps {
     isOpen: boolean;
@@ -13,18 +14,45 @@ interface ContractModalProps {
 export default function ContractModal({ isOpen, onClose, onSuccess, contract }: ContractModalProps) {
     const [loading, setLoading] = useState(false);
     const [clients, setClients] = useState<any[]>([]);
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<{
+        clientId: string;
+        title: string;
+        amount: string;
+        currency: string;
+        scope: any;
+        paymentTerms: string;
+        startDate: string;
+        endDate: string;
+        status: string;
+        clauses: string[];
+    }>({
         clientId: "",
         title: "",
         amount: "",
         currency: "USD",
-        scope: "",
+        scope: [],
         paymentTerms: "Net 30",
         startDate: new Date().toISOString().split('T')[0],
         endDate: "",
         status: "Draft",
         clauses: [""]
     });
+
+    const parseScope = (scope: any): ScopeSection[] => {
+        if (!scope) return [];
+        if (Array.isArray(scope)) return scope;
+        try {
+            const parsed = JSON.parse(scope);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            // If it's a plain string, convert it to a single section
+            return [{
+                id: 'legacy',
+                title: 'Project Scope',
+                items: scope.split('\n').filter((l: string) => l.trim() !== '')
+            }];
+        }
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -39,7 +67,7 @@ export default function ContractModal({ isOpen, onClose, onSuccess, contract }: 
                     title: contract.title || "",
                     amount: contract.amount?.toString() || "",
                     currency: contract.currency || "USD",
-                    scope: contract.scope || "",
+                    scope: parseScope(contract.scope),
                     paymentTerms: contract.paymentTerms || "Net 30",
                     startDate: contract.startDate ? new Date(contract.startDate).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
                     endDate: contract.endDate ? new Date(contract.endDate).toISOString().split('T')[0] : "",
@@ -52,7 +80,7 @@ export default function ContractModal({ isOpen, onClose, onSuccess, contract }: 
                     title: "",
                     amount: "",
                     currency: "USD",
-                    scope: "",
+                    scope: [],
                     paymentTerms: "Net 30",
                     startDate: new Date().toISOString().split('T')[0],
                     endDate: "",
@@ -92,6 +120,7 @@ export default function ContractModal({ isOpen, onClose, onSuccess, contract }: 
                 body: JSON.stringify({
                     ...formData,
                     amount: Number(formData.amount),
+                    scope: JSON.stringify(formData.scope),
                     clauses: formData.clauses.filter(c => c.trim() !== "")
                 }),
             });
@@ -253,13 +282,10 @@ export default function ContractModal({ isOpen, onClose, onSuccess, contract }: 
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-slate-400 mb-1.5">Scope of Work</label>
-                                <textarea
-                                    required
-                                    value={formData.scope}
-                                    onChange={(e) => setFormData({ ...formData, scope: e.target.value })}
-                                    className="input-field min-h-[100px]"
-                                    placeholder="Describe the projects deliverables..."
+                                <label className="block text-sm font-medium text-slate-400 mb-3">Scope of Work</label>
+                                <ScopeCanvasEditor 
+                                    value={formData.scope} 
+                                    onChange={(newScope) => setFormData({ ...formData, scope: newScope })} 
                                 />
                             </div>
 

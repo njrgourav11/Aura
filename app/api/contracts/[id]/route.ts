@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
 import { Contract } from "@/lib/models/Contract";
 import "@/lib/models/UserClient";
+import { processTrigger } from "@/lib/automation-engine";
 
 export async function GET(
     req: Request,
@@ -54,6 +55,11 @@ export async function PUT(
 
         if (!contract) {
             return NextResponse.json({ error: "Contract not found" }, { status: 404 });
+        }
+
+        // Trigger automations if status changed to Signed
+        if (data.status?.toLowerCase() === 'signed') {
+            await processTrigger((session.user as any).id, 'CONTRACT_SIGNED', { contract });
         }
 
         return NextResponse.json(contract);

@@ -2,11 +2,9 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
-import { Contract } from "@/lib/models/Contract";
-import "@/lib/models/UserClient"; // Ensure Client model is registered
-import { processTrigger } from "@/lib/automation-engine";
+import { Automation } from "@/lib/models/Automation";
 
-export async function GET() {
+export async function GET(req: Request) {
     try {
         const session = await getServerSession(authOptions);
         if (!session || !session.user) {
@@ -14,11 +12,11 @@ export async function GET() {
         }
 
         await connectToDatabase();
-        const contracts = await Contract.find({ userId: (session.user as any).id })
-            .populate('clientId', 'name email company')
-            .sort({ createdAt: -1 });
+        const automations = await Automation.find({
+            userId: (session.user as any).id
+        }).sort({ createdAt: -1 });
 
-        return NextResponse.json(contracts);
+        return NextResponse.json(automations);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
@@ -34,17 +32,12 @@ export async function POST(req: Request) {
         const data = await req.json();
         await connectToDatabase();
 
-        const contract = await Contract.create({
+        const automation = await Automation.create({
             ...data,
             userId: (session.user as any).id
         });
 
-        // Trigger automations if created as Signed
-        if (data.status?.toLowerCase() === 'signed') {
-            await processTrigger((session.user as any).id, 'CONTRACT_SIGNED', { contract });
-        }
-
-        return NextResponse.json(contract, { status: 201 });
+        return NextResponse.json(automation);
     } catch (error: any) {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }

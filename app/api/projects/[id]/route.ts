@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import connectToDatabase from "@/lib/db";
 import { Project } from "@/lib/models/Project";
+import { processTrigger } from "@/lib/automation-engine";
 
 export async function GET(
     req: Request,
@@ -53,6 +54,11 @@ export async function PUT(
 
         if (!project) {
             return NextResponse.json({ error: "Project not found" }, { status: 404 });
+        }
+
+        // Trigger automations if status changed to Completed
+        if (data.status === 'Completed') {
+            await processTrigger((session.user as any).id, 'PROJECT_COMPLETED', { project });
         }
 
         return NextResponse.json(project);

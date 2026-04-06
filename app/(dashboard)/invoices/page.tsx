@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Search, Receipt, Download, ExternalLink, Loader2, MoreVertical, X } from "lucide-react";
+import { Plus, Search, Receipt, Download, ExternalLink, Loader2, MoreVertical, X, Mail, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { generateInvoicePDF } from "@/lib/pdf";
@@ -15,6 +15,8 @@ export default function InvoicesPage() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+    const [sendingEmail, setSendingEmail] = useState<string | null>(null);
+    const [emailFeedback, setEmailFeedback] = useState<{ id: string; message: string; ok: boolean } | null>(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -88,6 +90,25 @@ export default function InvoicesPage() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setSelectedInvoice(null);
+    };
+
+    const handleSendEmail = async (invoice: any) => {
+        setSendingEmail(invoice._id);
+        setEmailFeedback(null);
+        try {
+            const res = await fetch('/api/invoices/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ invoiceId: invoice._id })
+            });
+            const data = await res.json();
+            setEmailFeedback({ id: invoice._id, message: res.ok ? data.message : data.error, ok: res.ok });
+            setTimeout(() => setEmailFeedback(null), 4000);
+        } catch (err) {
+            setEmailFeedback({ id: invoice._id, message: 'Failed to send email', ok: false });
+        } finally {
+            setSendingEmail(null);
+        }
     };
 
     return (
@@ -211,6 +232,20 @@ export default function InvoicesPage() {
                                                     title="Download PDF"
                                                 >
                                                     <Download className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleSendEmail(invoice)}
+                                                    disabled={sendingEmail === invoice._id}
+                                                    className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors disabled:opacity-50"
+                                                    title={emailFeedback?.id === invoice._id ? emailFeedback.message : "Send via Email"}
+                                                >
+                                                    {sendingEmail === invoice._id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : emailFeedback?.id === invoice._id && emailFeedback.ok ? (
+                                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                                    ) : (
+                                                        <Mail className="w-4 h-4" />
+                                                    )}
                                                 </button>
                                                 <button
                                                     onClick={() => handleEditInvoice(invoice)}

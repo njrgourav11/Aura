@@ -5,6 +5,7 @@ import connectToDatabase from "@/lib/db";
 import { Invoice } from "@/lib/models/InvoicePayment";
 import { Payment } from "@/lib/models/InvoicePayment";
 import crypto from "crypto";
+import { processTrigger } from "@/lib/automation-engine";
 
 export async function POST(req: Request) {
     try {
@@ -51,6 +52,9 @@ export async function POST(req: Request) {
             paidAt: new Date(),
             notes: `Razorpay Payment ID: ${razorpay_payment_id}`
         });
+
+        // Trigger automations for Invoice Paid
+        await processTrigger(invoice.userId.toString(), 'INVOICE_PAID', { invoice });
 
         return NextResponse.json({ message: "Payment verified successfully", invoice });
     } catch (error: any) {

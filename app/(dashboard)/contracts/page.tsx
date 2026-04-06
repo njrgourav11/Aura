@@ -1,7 +1,7 @@
 "use client"
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Plus, Search, FileSignature, Download, MoreVertical, Loader2, X } from "lucide-react";
+import { Plus, Search, FileSignature, Download, MoreVertical, Loader2, X, Mail, CheckCircle2 } from "lucide-react";
 import { format } from "date-fns";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { generateContractPDF } from "@/lib/pdf";
@@ -15,6 +15,8 @@ export default function ContractsPage() {
     const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedContract, setSelectedContract] = useState<any>(null);
+    const [sendingEmail, setSendingEmail] = useState<string | null>(null);
+    const [emailFeedback, setEmailFeedback] = useState<{ id: string; message: string; ok: boolean } | null>(null);
 
     const fetchData = async () => {
         setLoading(true);
@@ -88,13 +90,33 @@ export default function ContractsPage() {
                 "Liability for either party is limited to the total value of this contract."
             ],
             businessDetails: {
-                name: settings?.businessName,
+                name: settings?.name || settings?.businessName,
+                businessName: settings?.businessName,
                 address: settings?.businessAddress,
                 email: settings?.businessEmail,
                 phone: settings?.businessPhone,
                 taxId: settings?.taxId
             }
         });
+    };
+
+    const handleSendEmail = async (contract: any) => {
+        setSendingEmail(contract._id);
+        setEmailFeedback(null);
+        try {
+            const res = await fetch('/api/contracts/send-email', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ contractId: contract._id })
+            });
+            const data = await res.json();
+            setEmailFeedback({ id: contract._id, message: res.ok ? data.message : data.error, ok: res.ok });
+            setTimeout(() => setEmailFeedback(null), 4000);
+        } catch (err) {
+            setEmailFeedback({ id: contract._id, message: 'Failed to send email', ok: false });
+        } finally {
+            setSendingEmail(null);
+        }
     };
 
     return (
@@ -221,6 +243,20 @@ export default function ContractsPage() {
                                                     onClick={() => handleDownloadContract(contract)}
                                                 >
                                                     <Download className="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    onClick={() => handleSendEmail(contract)}
+                                                    disabled={sendingEmail === contract._id}
+                                                    className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors disabled:opacity-50"
+                                                    title={emailFeedback && emailFeedback.id === contract._id ? emailFeedback.message : "Send via Email"}
+                                                >
+                                                    {sendingEmail === contract._id ? (
+                                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                                    ) : emailFeedback && emailFeedback.id === contract._id && emailFeedback.ok ? (
+                                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                                                    ) : (
+                                                        <Mail className="w-4 h-4" />
+                                                    )}
                                                 </button>
                                                 <button
                                                     onClick={() => handleEditContract(contract)}

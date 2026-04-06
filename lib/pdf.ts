@@ -10,10 +10,12 @@ export interface ContractData {
     currency: string;
     startDate: Date;
     endDate?: Date;
-    scope: string;
+    scope: string | any[];
     clauses: string[];
     businessDetails?: {
         name?: string;
+        businessName?: string;
+        title?: string;
         email?: string;
         phone?: string;
         address?: string;
@@ -44,16 +46,16 @@ export interface InvoiceData {
 /* -------------------------------- */
 
 // Color palette
-const INK:      [number, number, number] = [15,  12,   9];
-const SLATE:    [number, number, number] = [45,  42,  55];
-const MIST:     [number, number, number] = [120, 115, 130];
-const FOG:      [number, number, number] = [200, 196, 206];
-const PAPER:    [number, number, number] = [250, 248, 245];
-const CREAM:    [number, number, number] = [238, 234, 226];
-const ACCENT:   [number, number, number] = [220,  90,  60];  // terracotta
-const SAGE:     [number, number, number] = [60,  130, 110];  // sage green
-const INDIGO:   [number, number, number] = [75,   65, 180];
-const GOLD:     [number, number, number] = [190, 155,  85];
+const INK: [number, number, number] = [15, 12, 9];
+const SLATE: [number, number, number] = [45, 42, 55];
+const MIST: [number, number, number] = [120, 115, 130];
+const FOG: [number, number, number] = [200, 196, 206];
+const PAPER: [number, number, number] = [250, 248, 245];
+const CREAM: [number, number, number] = [238, 234, 226];
+const ACCENT: [number, number, number] = [220, 90, 60];  // terracotta
+const SAGE: [number, number, number] = [60, 130, 110];  // sage green
+const INDIGO: [number, number, number] = [75, 65, 180];
+const GOLD: [number, number, number] = [190, 155, 85];
 
 const fmtNum = (n: number) =>
     n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -78,11 +80,14 @@ const addDocumentHeader = (
 
     // Brand circle mark
     doc.setFillColor(...ACCENT);
-    doc.circle(margin + 10, 23, 10, "F");
+    const circleX = margin + 10;
+    const circleY = 23;
+    doc.circle(circleX, circleY, 10, "F");
     doc.setFontSize(14);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(255, 255, 255);
-    doc.text("F", margin + 7, 27);
+    // Centering "F" both horizontally and vertically
+    doc.text("F", circleX, circleY + 3.5, { align: "center" });
 
     // Company name & tagline
     doc.setFontSize(15);
@@ -96,20 +101,26 @@ const addDocumentHeader = (
 
     // Document type badge (right side)
     const typeLabel = type.toUpperCase();
-    const badgeW = typeLabel.length * 3.1 + 12;
-    doc.setFillColor(...ACCENT);
-    doc.roundedRect(W - margin - badgeW, 13, badgeW, 10, 2, 2, "F");
     doc.setFontSize(8);
+    const textWidth = doc.getTextWidth(typeLabel);
+    const badgeW = textWidth + 12;
+    const badgeX = W - margin - badgeW;
+    const badgeY = 16; // Lifted slightly
+    const badgeH = 10;
+    
+    doc.setFillColor(...ACCENT);
+    doc.roundedRect(badgeX, badgeY, badgeW, badgeH, 2, 2, "F");
     doc.setFont("helvetica", "bold");
     doc.setTextColor(255, 255, 255);
-    doc.text(typeLabel, W - margin - badgeW + 6, 20);
+    // Centering text in the badge
+    doc.text(typeLabel, badgeX + badgeW / 2, badgeY + 6.5, { align: "center" });
 
     // Ref & date
     doc.setFontSize(8);
     doc.setFont("helvetica", "normal");
     doc.setTextColor(...FOG);
-    if (ref) doc.text(`REF: ${ref}`, W - margin, 30, { align: "right" });
-    doc.text(`ISSUED: ${format(new Date(), "PP")}`, W - margin, 37, { align: "right" });
+    if (ref) doc.text(`REF: ${ref}`, W - margin, 31, { align: "right" });
+    doc.text(`ISSUED: ${format(new Date(), "PP")}`, W - margin, 38, { align: "right" });
 
     // Bottom accent stripe
     doc.setFillColor(...ACCENT);
@@ -256,14 +267,57 @@ export const generateContractPDF = (data: ContractData) => {
     yPos += cardH + 14;
 
     // ── ARTICLE 2: SCOPE ─────────────────────────────────────────────────────
-    checkPageBreak(40);
+    checkPageBreak(30);
     yPos = drawSectionBar(doc, yPos, `Article II · Scope of Services  ·  Start: ${format(data.startDate, "PPP")}`);
-    doc.setFontSize(9.5);
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(...SLATE);
-    const scopeLines = doc.splitTextToSize(data.scope, contentWidth);
-    doc.text(scopeLines, margin, yPos);
-    yPos += scopeLines.length * 5.5 + 14;
+
+    let scopeData = data.scope;
+    if (typeof scopeData === 'string' && (scopeData.trim().startsWith('[') || scopeData.trim().startsWith('{'))) {
+        try {
+            scopeData = JSON.parse(scopeData);
+        } catch (e) {
+            // Keep as string
+        }
+    }
+
+    if (Array.isArray(scopeData)) {
+        scopeData.forEach((section: any) => {
+            checkPageBreak(15);
+            if (section.title) {
+                doc.setFontSize(9.5);
+                doc.setFont("helvetica", "bold");
+                doc.setTextColor(...INK);
+                const titleLines = doc.splitTextToSize(section.title.toUpperCase(), contentWidth);
+                doc.text(titleLines, margin, yPos);
+                yPos += titleLines.length * 5.5 + 2;
+            }
+
+            if (Array.isArray(section.items)) {
+                section.items.forEach((item: string) => {
+                    doc.setFontSize(9);
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(...SLATE);
+                    const itemLines = doc.splitTextToSize(item, contentWidth - 8);
+                    const itemH = itemLines.length * 4.8;
+                    checkPageBreak(itemH + 3);
+
+                    doc.text("•", margin + 3, yPos);
+                    doc.text(itemLines, margin + 8, yPos);
+                    yPos += itemH + 3;
+                });
+            }
+            yPos += 5; // spacing between sections
+        });
+        yPos += 4;
+    } else {
+        doc.setFontSize(9.5);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(...SLATE);
+        const scopeLines = doc.splitTextToSize(scopeData, contentWidth);
+        const scopeH = scopeLines.length * 5.5;
+        checkPageBreak(scopeH + 10);
+        doc.text(scopeLines, margin, yPos);
+        yPos += scopeH + 14;
+    }
 
     // ── ARTICLE 3: COMPENSATION ───────────────────────────────────────────────
     checkPageBreak(30);
@@ -344,7 +398,7 @@ export const generateContractPDF = (data: ContractData) => {
 
     const sigPairs: [string, number][] = [
         ["SERVICE PROVIDER", margin],
-        ["CLIENT / BUYER",   margin + colWidth + 10]
+        ["CLIENT / BUYER", margin + colWidth + 10]
     ];
 
     sigPairs.forEach(([label, x]) => {
@@ -356,9 +410,20 @@ export const generateContractPDF = (data: ContractData) => {
         doc.setTextColor(...MIST);
         doc.text(label, x, yPos + 23);
         doc.setFont("helvetica", "normal");
-        doc.text("Name: _____________________________", x, yPos + 30);
-        doc.text("Title: _____________________________", x, yPos + 37);
-        doc.text("Date:  _____________________________", x, yPos + 44);
+
+        let name = "_____________________________";
+        let title = "_____________________________";
+        let date = "_____________________________";
+
+        if (label === "SERVICE PROVIDER" && data.businessDetails) {
+            name = data.businessDetails.name || name;
+            title = data.businessDetails.title || "Software Developer";
+            date = format(new Date(), "PPP");
+        }
+
+        doc.text(`Name: ${name}`, x, yPos + 30);
+        doc.text(`Title: ${title}`, x, yPos + 37);
+        doc.text(`Date:  ${date}`, x, yPos + 44);
     });
 
     addDocumentFooter(doc, pageNumber);
@@ -433,9 +498,9 @@ export const generateInvoicePDF = (data: InvoiceData) => {
 
     // ── Invoice meta strip ────────────────────────────────────────────────────
     const metaLabels: [string, number, string][] = [
-        ["INVOICE DATE", margin,       format(data.issuedAt, "MMM dd, yyyy")],
-        ["DUE DATE",     margin + 60,  format(data.dueDate, "MMM dd, yyyy")],
-        ["TAX ID",       margin + 120, data.businessDetails?.taxId || "N/A"]
+        ["INVOICE DATE", margin, format(data.issuedAt, "MMM dd, yyyy")],
+        ["DUE DATE", margin + 60, format(data.dueDate, "MMM dd, yyyy")],
+        ["TAX ID", margin + 120, data.businessDetails?.taxId || "N/A"]
     ];
 
     metaLabels.forEach(([label, x, value]) => {
@@ -457,9 +522,9 @@ export const generateInvoicePDF = (data: InvoiceData) => {
     doc.setFontSize(8);
     doc.setFont("helvetica", "bold");
     doc.setTextColor(255, 255, 255);
-    doc.text("Description",          margin + 4,   yPos + 7);
-    doc.text("Qty",  margin + 102,   yPos + 7, { align: "right" });
-    doc.text("Rate", margin + 132,   yPos + 7, { align: "right" });
+    doc.text("Description", margin + 4, yPos + 7);
+    doc.text("Qty", margin + 102, yPos + 7, { align: "right" });
+    doc.text("Rate", margin + 132, yPos + 7, { align: "right" });
     doc.text("Amount", margin + 168, yPos + 7, { align: "right" });
     yPos += 12;
 
@@ -480,10 +545,10 @@ export const generateInvoicePDF = (data: InvoiceData) => {
         doc.text(lines, margin + 4, yPos);
 
         doc.setTextColor(...INK);
-        doc.text(item.quantity.toString(),       margin + 102, yPos, { align: "right" });
-        doc.text(fmtNum(item.rate),              margin + 132, yPos, { align: "right" });
+        doc.text(item.quantity.toString(), margin + 102, yPos, { align: "right" });
+        doc.text(fmtNum(item.rate), margin + 132, yPos, { align: "right" });
         doc.setFont("helvetica", "bold");
-        doc.text(fmtNum(item.amount),            margin + 168, yPos, { align: "right" });
+        doc.text(fmtNum(item.amount), margin + 168, yPos, { align: "right" });
 
         yPos += rowH;
     });

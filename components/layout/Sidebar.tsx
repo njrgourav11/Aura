@@ -25,6 +25,7 @@ const navItems = [
     { name: "Payments", href: "/payments", icon: Wallet, badge: 0 },
     { name: "Tax Reports", href: "/tax", icon: PieChart, badge: 0 },
     { name: "Clients", href: "/clients", icon: Users, badge: 0 },
+    { name: "Automations", href: "/automations", icon: Sparkles, badge: 0 },
 ];
 
 export default function Sidebar() {
