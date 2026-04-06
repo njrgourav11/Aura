@@ -237,11 +237,11 @@ export default function InvoicesPage() {
                                                     onClick={() => handleSendEmail(invoice)}
                                                     disabled={sendingEmail === invoice._id}
                                                     className="p-1.5 text-slate-400 hover:text-emerald-400 hover:bg-emerald-400/10 rounded-lg transition-colors disabled:opacity-50"
-                                                    title={emailFeedback?.id === invoice._id ? emailFeedback.message : "Send via Email"}
+                                                    title={emailFeedback?.id === invoice._id ? emailFeedback?.message : "Send via Email"}
                                                 >
                                                     {sendingEmail === invoice._id ? (
                                                         <Loader2 className="w-4 h-4 animate-spin" />
-                                                    ) : emailFeedback?.id === invoice._id && emailFeedback.ok ? (
+                                                    ) : emailFeedback?.id === invoice._id && emailFeedback?.ok ? (
                                                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                                     ) : (
                                                         <Mail className="w-4 h-4" />
